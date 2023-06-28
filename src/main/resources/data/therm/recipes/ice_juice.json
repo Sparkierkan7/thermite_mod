@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WS ",
+    "B  ",
+    "   "
+  ],
+  "key": {
+
+    "W": {
+      "item": "minecraft:glass_bottle"
+    },
+    "B": {
+      "item": "therm:gold_sweet_berries"
+    },
+    "S": {
+      "item": "minecraft:sugar"
+    }
+
+  },
+  "result": {
+
+    "item": "therm:ice_juice",
+    "count": 1
+
+  }
+}

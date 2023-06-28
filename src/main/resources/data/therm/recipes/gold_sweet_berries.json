@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    "GBG",
+    " G "
+  ],
+  "key": {
+
+    "G": {
+      "item": "minecraft:gold_nugget"
+    },
+    "B": {
+      "item": "minecraft:sweet_berries"
+    }
+
+  },
+  "result": {
+
+    "item": "therm:gold_sweet_berries",
+    "count": 1
+
+  }
+}
