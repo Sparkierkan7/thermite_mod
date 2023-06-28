@@ -1,2 +1,2 @@
-# thermite_mod
+# Thermite
 A minecraft temperature mod.
