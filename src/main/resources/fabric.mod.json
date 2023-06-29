@@ -3,7 +3,7 @@
 	"id": "therm",
 	"version": "${version}",
 	"name": "Thermite",
-	"description": "",
+	"description": "A fabric mod that adds a temperature system.",
 	"authors": [
 		"sparkierkan7"
 	],

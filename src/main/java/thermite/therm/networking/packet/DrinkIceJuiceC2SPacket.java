@@ -18,7 +18,6 @@ public class DrinkIceJuiceC2SPacket {
 
         playerState.temp -= 10;
         if (playerState.temp < 0) {playerState.temp = 0;}
-        ThermMod.LOGGER.info("colder");
         serverState.markDirty();
 
     }
