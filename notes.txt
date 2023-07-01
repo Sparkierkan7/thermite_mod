@@ -1,0 +1,15 @@
+
+frigid: <0.0
+cold: <0.31 && >=0.0
+temperate: <0.9 && >=0.31
+hot: <2.0 && >0.8
+arid: >=2.0
+
+sunrise: 23013
+sunset: 13313
+
+cold threshold 1: 35
+cold threshold 2: 25
+
+hot threshold 1: 65
+hot threshold 1: 75
