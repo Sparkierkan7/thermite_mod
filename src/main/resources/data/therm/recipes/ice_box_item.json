@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SPS",
+    "WBW",
+    "SPS"
+  ],
+  "key": {
+
+    "B": {
+      "item": "minecraft:barrel"
+    },
+    "W": {
+      "tag": "minecraft:wool"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+
+    "item": "therm:ice_box_empty_item",
+    "count": 1
+
+  }
+}

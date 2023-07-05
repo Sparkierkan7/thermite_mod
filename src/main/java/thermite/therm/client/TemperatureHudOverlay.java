@@ -36,6 +36,7 @@ public class TemperatureHudOverlay implements HudRenderCallback {
         //TODO fix this monstrosity
         float pixelMultiplier = 1.5f;
         float tempFract = ((ThermClient.clientStoredTemperature / 100f) * Math.round(40*pixelMultiplier));
+        if (((ThermClient.clientStoredTemperature / 100f) * Math.round(40*pixelMultiplier)) > 59.0f) { tempFract = ((97 / 100f) * Math.round(40*pixelMultiplier)); } else if ((ThermClient.clientStoredTemperature / 100f) < 0) { tempFract = 0f; }
 
         drawContext.drawTexture(THERMOMETER_GAUGE, x - ((44 + 149) - Math.round(2*pixelMultiplier)), y - (Math.round(8 * pixelMultiplier) + Math.round(3*pixelMultiplier) + 1),  0, 0, Math.round(40*pixelMultiplier), Math.round(9*pixelMultiplier), Math.round(40*pixelMultiplier), Math.round(9*pixelMultiplier));
         drawContext.drawTexture(THERMOMETER_HAND, x - (int)( ((44 + 149) - Math.round(2*pixelMultiplier)) - tempFract ), y - (Math.round(8 * pixelMultiplier) + Math.round(3*pixelMultiplier) + 1),  0, 0, Math.round(1), Math.round(9*pixelMultiplier), Math.round(1), Math.round(9*pixelMultiplier));

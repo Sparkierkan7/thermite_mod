@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "up": "therm:block/ice_box_empty_top",
+    "down": "therm:block/ice_box_empty_top",
+    "north": "therm:block/ice_box_empty_side",
+    "east": "therm:block/ice_box_empty_side",
+    "south": "therm:block/ice_box_empty_side",
+    "west": "therm:block/ice_box_empty_side"
+  }
+}

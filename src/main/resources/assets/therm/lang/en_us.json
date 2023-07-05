@@ -1,5 +1,10 @@
 {
   "item.therm.gold_sweet_berries": "Shimmering Sweet berries",
   "item.therm.ice_juice": "Bottle of Ice Juice",
-  "item.therm.thermometer": "Thermometer"
+  "item.therm.thermometer": "Thermometer",
+
+  "block.therm.ice_box_empty": "Empty Ice Box",
+  "block.therm.ice_box_freezing": "Freezing Ice Box",
+  "block.therm.ice_box_frozen": "Frozen Ice Box"
+
 }

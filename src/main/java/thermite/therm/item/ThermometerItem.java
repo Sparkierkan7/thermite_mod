@@ -13,15 +13,4 @@ public class ThermometerItem extends Item {
         super(settings);
     }
 
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity playerEntity, Hand hand) {
-
-        if (hand == Hand.MAIN_HAND && world.isClient) {
-
-
-
-        }
-
-        return TypedActionResult.success(playerEntity.getStackInHand(hand));
-    }
-
 }

@@ -13,3 +13,7 @@ cold threshold 2: 25
 
 hot threshold 1: 65
 hot threshold 1: 75
+
+ice box:
+
+right clicking with water bottle turns empty ice box block into freezing if it is in cold climate or warm if it is in a climate greater than cold. then you must use ice juice to turn it into freezing. freezing ice box will randomly tick until it has turned into frozen ice box and then you can right click to get random amount of ice from it.
