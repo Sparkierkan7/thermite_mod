@@ -1,8 +1,10 @@
 ### License
 This mod is available under the MIT license.
 
-### Dependencies
+### Dependencies for Latest Version
 [Fabric Api](https://modrinth.com/mod/fabric-api/version/0.83.1+1.20.1) >=0.83.1 for mc 1.20.1
+
+[CompleteConfig](https://modrinth.com/mod/completeconfig/version/2.4.0) >=2.4.0 for mc 1.20.1
 
 [Roughly Enough Items](https://modrinth.com/mod/rei/version/12.0.625+fabric) (Recommended)
 
@@ -61,3 +63,17 @@ The direction icon is the icon in the middle of the gauge. is a white ball when 
 
 #### Temperature cooling down:
 <img src="https://cdn-raw.modrinth.com/data/ggmtYNuc/images/fe9742ccde814a169dbff4c9a89dca2ff65e4866.png"  width="50%" height="50%">
+
+
+
+
+&emsp;
+&emsp;
+### Season System (Disabled By Default)
+When enabled your temperature will be affected by the current season. Its main purpose is for mod compatibility but you can turn it on by itself. For example if you have a season mod installed then you would want your temperature to change with that mods seasons. You don't need to turn this on for [Fabric Seasons](https://modrinth.com/mod/fabric-seasons) because it already affects your temperature by changing the biome temperature.
+
+### Config
+Config file path is "config/therm.conf", if you want something added to the config create an issue on github.
+
+
+
