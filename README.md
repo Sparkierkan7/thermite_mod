@@ -14,13 +14,23 @@ In vanilla minecraft, biomes have there own built in temperature.
 This mod takes that temperature and determines how cold or hot you should feel.
 So it should work with any modded biome as long as its biome temperature is set appropriately.
 
+### Heating
 Heat making blocks will slowly increase your temperature if you are less than 3 blocks away.
 Torches increase temperature by 3, fire also 3, lava 8 and campfires 16.
 You can also increase your temperature by wearing leather armor. Boots increase by 1, leggings 2,  chestplate 3 and helmet 1.
 
-You will become colder if it rains, snows, its nighttime or if you get in water.
+### Cooling
+Cold making blocks do the opposite of heat making blocks and cool you down but within a shorter range (2 blocks). Ice decreases by 1, packed ice decreases by 3 and blue ice decreases by 6. This is useful if you are in a hot climate since you can just put some ice under your floor and that will cool you down, or in the nether if you don't have fire resistance.
+
+You will also become colder if it rains, snows, its nighttime or if you get in water.
 Fire resistance will stop you from taking any damage from high temperature.
 So if you are too hot drink fire resistance or make ice juice. (use [REI](https://modrinth.com/mod/rei/version/12.0.625+fabric) to see ice juice recipe). Ice juice is very useful in the nether before you get fire resistance.
+
+
+### Ice Box Mechanics
+The ice box is a new block added that can be used to get ice easier before getting silk touch. First craft an empty ice box (use [REI](https://modrinth.com/mod/rei/version/12.0.625+fabric) for recipe). Then you can right click it with a water bottle to fill it with water. For it to make ice it needs to be in a cold or frigid climate (taiga biomes and snowy biomes will be fine). When you have filled it and it is in a cold or frigid climate you just have to wait and it will freeze. Once it has frozen you can right click it and it will give you 3 ice and turn back into an empty ice box.
+
+When it is in a frozen state it will act like packed ice and cool you down by 3 if you are near enough. But it will slowly melt and turn back into its unfrozen state in biomes than are not cold or frigid. The hotter the biome the faster it melts.
 
 ### UI and Thermometer
 The UI is a gauge on your bottom left. The black slider will slide left when you get cold and right when you get hot. The range is 0 - 100 where 50 is your preferred temperature.
