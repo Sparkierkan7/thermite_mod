@@ -21,11 +21,24 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "Length of winter (Default 48000 half seconds = 20 days).")
     public long winterSeasonLength = 48000;
 
-    @ConfigEntry(comment = "This options doesn't work yet.")
+    @ConfigEntry(comment = "This option doesn't work yet.")
     public String startingSeason = "spring";
 
-    @ConfigEntry(comment = "Multiplier for how much seasons affect your temperature")
+    @ConfigEntry(comment = "Multiplier for how much seasons affect your temperature.")
     public float seasonTemperatureExtremenessMultiplier = 1.0f;
+
+
+    @ConfigEntry(comment = "X coordinate of temperature UI relative to its default position.")
+    public int temperatureXPos = 0;
+
+    @ConfigEntry(comment = "Y coordinate of temperature UI relative to its default position.")
+    public int temperatureYPos = 0;
+
+    @ConfigEntry(comment = "X coordinate of thermometer UI relative to its default position.")
+    public int thermometerXPos = 0;
+
+    @ConfigEntry(comment = "Y coordinate of thermometer UI relative to its default position.")
+    public int thermometerYPos = 0;
 
     public ThermConfig() {
         super(ConfigOptions.mod(ThermMod.modid));

@@ -27,8 +27,8 @@ public class TemperatureHudOverlay implements HudRenderCallback {
         ItemStack offHand = ItemStack.EMPTY;
         MinecraftClient client = MinecraftClient.getInstance();
         if (client != null) {
-            x = client.getWindow().getScaledWidth() / 2;
-            y = client.getWindow().getScaledHeight();
+            x = (client.getWindow().getScaledWidth() / 2) + ThermMod.config.temperatureXPos;
+            y = client.getWindow().getScaledHeight() + ThermMod.config.temperatureYPos;
             assert client.player != null;
             offHand = client.player.getOffHandStack();
         }
@@ -52,9 +52,9 @@ public class TemperatureHudOverlay implements HudRenderCallback {
         }
 
         if (offHand.getItem() == ThermMod.THERMOMETER_ITEM) {
-            drawContext.drawTexture(THERMOMETER_DISPLAY, (x - (x - 16)), frameY,0, 0, Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier), Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier));
+            drawContext.drawTexture(THERMOMETER_DISPLAY, (x - (x - 16)) + ThermMod.config.thermometerXPos, frameY + ThermMod.config.thermometerYPos,0, 0, Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier), Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier));
             assert client != null;
-            drawContext.drawText(client.textRenderer, "§7" + ThermClient.clientStoredTemperature, (x - (x - 16)) + 6, frameY + 7,16777215, true);
+            drawContext.drawText(client.textRenderer, "§7" + ThermClient.clientStoredTemperature, ((x - (x - 16)) + 6) + ThermMod.config.thermometerXPos, (frameY + 7) + ThermMod.config.thermometerYPos,16777215, true);
         }
 
     }
