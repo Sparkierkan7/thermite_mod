@@ -17,6 +17,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import thermite.therm.ServerState;
+import thermite.therm.ThermMod;
 import thermite.therm.ThermPlayerState;
 import thermite.therm.ThermUtil;
 import thermite.therm.block.ThermBlocks;
@@ -70,6 +71,19 @@ public class PlayerTempTickC2SPacket {
             playerState.maxTemp = 120;
             playerState.restingTemp = 70;
             nightRTemp = -15;
+        }
+
+        if (ThermMod.config.enableSeasonSystem) {
+            int season = serverState.season;
+
+            if (season == 1) {
+                playerState.restingTemp += (8 * ThermMod.config.seasonTemperatureExtremenessMultiplier);
+            } else if (season == 2) {
+                playerState.restingTemp -= (8 * ThermMod.config.seasonTemperatureExtremenessMultiplier);
+            } else if (season == 3) {
+                playerState.restingTemp -= (12 * ThermMod.config.seasonTemperatureExtremenessMultiplier);
+            }
+
         }
 
         DimensionType dim = player.getWorld().getDimension();

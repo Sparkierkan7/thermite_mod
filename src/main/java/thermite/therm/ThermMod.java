@@ -1,7 +1,9 @@
 package thermite.therm;
 
+import me.lortseam.completeconfig.data.ConfigOptions;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -32,8 +34,14 @@ public class ThermMod implements ModInitializer {
 	public static final BlockItem ICE_BOX_FREEZING_ITEM = new BlockItem(ThermBlocks.ICE_BOX_FREEZING_BLOCK, new FabricItemSettings());
 	public static final BlockItem ICE_BOX_FROZEN_ITEM = new BlockItem(ThermBlocks.ICE_BOX_FROZEN_BLOCK, new FabricItemSettings());
 
+	//config
+	public static final ThermConfig config = new ThermConfig();
+
 	@Override
 	public void onInitialize() {
+
+		config.load();
+		ConfigOptions.mod(modid).branch(new String[]{"branch", "config"});
 
 		//items
 		Registry.register(Registries.ITEM, new Identifier(modid, "gold_sweet_berries"), GOLD_SWEET_BERRIES_ITEM);
@@ -70,6 +78,48 @@ public class ThermMod implements ModInitializer {
 			ServerState serverState = ServerState.getServerState(handler.player.getWorld().getServer());
 			ThermPlayerState playerState = ServerState.getPlayerState(handler.player);
 
+		});
+
+		//server tick
+		ServerTickEvents.START_SERVER_TICK.register((server) -> {
+			ServerState serverState = ServerState.getServerState(server);
+
+			if (config.enableSeasonSystem) {
+				serverState.seasonTick += 1;
+				if (serverState.seasonTick >= 10) {
+					serverState.seasonTick = 0;
+
+					if (serverState.season == 0) {
+						serverState.currentSeasonTick += 1;
+						if (serverState.currentSeasonTick >= config.springSeasonLength) {
+							serverState.season = 1;
+							serverState.currentSeasonTick = 0;
+						}
+					} else if (serverState.season == 1) {
+						serverState.currentSeasonTick += 1;
+						if (serverState.currentSeasonTick >= config.summerSeasonLength) {
+							serverState.season = 2;
+							serverState.currentSeasonTick = 0;
+						}
+					} else if (serverState.season == 2) {
+						serverState.currentSeasonTick += 1;
+						if (serverState.currentSeasonTick >= config.fallSeasonLength) {
+							serverState.season = 3;
+							serverState.currentSeasonTick = 0;
+						}
+					} else if (serverState.season == 3) {
+						serverState.currentSeasonTick += 1;
+						if (serverState.currentSeasonTick >= config.winterSeasonLength) {
+							serverState.season = 0;
+							serverState.currentSeasonTick = 0;
+						}
+					}
+
+					LOGGER.info("Season: " + serverState.season + " Time: " + serverState.currentSeasonTick);
+
+				}
+				serverState.markDirty();
+			}
 		});
 
 	}

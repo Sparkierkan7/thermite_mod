@@ -13,6 +13,9 @@ import java.util.UUID;
 public class ServerState extends PersistentState {
 
     int testInt = 0;
+    public int season = 0;
+    public int seasonTick = 0;
+    public long currentSeasonTick = 0;
 
     public HashMap<UUID, ThermPlayerState> players = new HashMap<>();
 
@@ -38,6 +41,9 @@ public class ServerState extends PersistentState {
         nbt.put("players", playersNbtCompound);
 
         nbt.putInt("testInt", testInt);
+        nbt.putInt("season", season);
+        nbt.putInt("seasonTick", seasonTick);
+        nbt.putLong("currentSeasonTick", currentSeasonTick);
         return nbt;
     }
 
@@ -64,6 +70,9 @@ public class ServerState extends PersistentState {
         });
 
         serverState.testInt = tag.getInt("testInt");
+        serverState.season = tag.getInt("season");
+        serverState.seasonTick = tag.getInt("seasonTick");
+        serverState.currentSeasonTick = tag.getLong("currentSeasonTick");
 
         return serverState;
     }
