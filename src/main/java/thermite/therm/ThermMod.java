@@ -115,7 +115,50 @@ public class ThermMod implements ModInitializer {
 						}
 					}
 
-					LOGGER.info("Season: " + serverState.season + " Time: " + serverState.currentSeasonTick);
+					if (config.seasonalWeather) {
+						serverState.seasonalWeatherTick += 1;
+
+						//LOGGER.info("season: " + serverState.season + " time: " + serverState.currentSeasonTick);
+
+						if (serverState.seasonalWeatherTick >= 600) {
+							serverState.seasonalWeatherTick = 0;
+
+							int rain;
+							int thunder;
+
+							if (serverState.season == 0) {
+								rain = ThermUtil.randInt(0, 4);
+								thunder = ThermUtil.randInt(0, 8);
+							} else if (serverState.season == 1) {
+								rain = ThermUtil.randInt(0, 10);
+								thunder = ThermUtil.randInt(0, 10);
+							} else if (serverState.season == 2) {
+								rain = ThermUtil.randInt(0, 2);
+								thunder = ThermUtil.randInt(0, 6);
+							} else if (serverState.season == 3) {
+								rain = ThermUtil.randInt(0, 6);
+								thunder = ThermUtil.randInt(0, 10);
+							} else {
+								rain = 1;
+								thunder = 1;
+							}
+
+							server.getWorlds().forEach((world) -> {
+								if (rain == 0) {
+									world.setWeather(0, 1200, true, false);
+								}
+								if (thunder == 0) {
+									world.setWeather(0, 1200, true, true);
+								}
+							});
+
+							//LOGGER.info("rain: " + rain + " thunder: " + thunder + " season: " + serverState.season + " time: " + serverState.currentSeasonTick);
+
+						}
+
+					}
+
+					//LOGGER.info("Season: " + serverState.season + " Time: " + serverState.currentSeasonTick);
 
 				}
 				serverState.markDirty();

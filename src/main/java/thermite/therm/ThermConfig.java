@@ -6,6 +6,7 @@ import me.lortseam.completeconfig.data.ConfigOptions;
 
 public class ThermConfig extends Config {
 
+    //seasons
     @ConfigEntry(comment = "A small built in season system that affects your temperature depending on the season. You can configure the length of each season in half seconds, (one minecraft day = 2400 half seconds).")
     public boolean enableSeasonSystem = false;
 
@@ -28,6 +29,12 @@ public class ThermConfig extends Config {
     public float seasonTemperatureExtremenessMultiplier = 1.0f;
 
 
+    //weather
+    @ConfigEntry(comment = "(Experimental) makes weather reflect the current season. If you enable this make sure to run (/gamerule doWeatherCycle false) to disable the vanilla weather cycle.")
+    public boolean seasonalWeather = false;
+
+
+    //gui
     @ConfigEntry(comment = "X coordinate of temperature UI relative to its default position.")
     public int temperatureXPos = 0;
 
