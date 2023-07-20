@@ -147,15 +147,6 @@ public class PlayerTempTickC2SPacket {
                 packed_ice.addAndGet(1);
             }
         });
-        /*for (int j = 0; j < coldBox.size; j++) {
-            if (Objects.equals(box.get(j).blockState.getBlock().getName(), Blocks.ICE.getName())) {
-                ice += 1;
-            } else if (Objects.equals(box.get(j).blockState.getBlock().getName(), Blocks.PACKED_ICE.getName())) {
-                packed_ice += 1;
-            } else if (Objects.equals(box.get(j).blockState.getBlock().getName(), Blocks.BLUE_ICE.getName())) {
-                blue_ice += 1;
-            }
-        }*/
         playerState.restingTemp -= (ice.get() * 1);
         playerState.restingTemp -= (packed_ice.get() * 3);
         playerState.restingTemp -= (blue_ice.get() * 6);
@@ -164,6 +155,7 @@ public class PlayerTempTickC2SPacket {
             playerState.restingTemp -= 10;
         }
 
+        //leather armor
         if (player.getInventory().getArmorStack(0).getItem() == Items.LEATHER_BOOTS) { //boot
             playerState.restingTemp += 1;
         }
@@ -177,6 +169,14 @@ public class PlayerTempTickC2SPacket {
             playerState.restingTemp += 1;
         }
 
+        //fire protection
+        int fireProt = 0;
+        for (int i = 0; i < 4; i++) {
+            if (Objects.equals(player.getInventory().getArmorStack(i).getEnchantments().getCompound(0).getString("id"), "minecraft:fire_protection")) {
+                fireProt += player.getInventory().getArmorStack(i).getEnchantments().getCompound(0).getInt("lvl");
+            }
+        }
+        playerState.restingTemp -= (fireProt * ThermMod.config.fireProtectionCoolingMultiplier);
 
         short tempDir = 16;
 
@@ -210,7 +210,7 @@ public class PlayerTempTickC2SPacket {
                 playerState.damageTick += 1;
             } else if (playerState.damageTick >= playerState.maxDamageTick) {
                 playerState.damageTick = 0;
-                player.damage(player.getWorld().getDamageSources().freeze(), 1);
+                player.damage(player.getWorld().getDamageSources().freeze(), ThermMod.config.hypothermiaDamage);
                 player.getHungerManager().setSaturationLevel(player.getHungerManager().getSaturationLevel() - 6);
                 if (player.getHungerManager().getSaturationLevel() < 0) {
                     player.getHungerManager().setSaturationLevel(0f);
@@ -230,8 +230,7 @@ public class PlayerTempTickC2SPacket {
                     playerState.damageTick += 1;
                 } else if (playerState.damageTick >= playerState.maxDamageTick) {
                     playerState.damageTick = 0;
-                    player.damage(player.getWorld().getDamageSources().onFire(), 1);
-                    player.damage(player.getWorld().getDamageSources().freeze(), 1);
+                    player.damage(player.getWorld().getDamageSources().onFire(), ThermMod.config.hyperthermiaDamage);
                     player.getHungerManager().setSaturationLevel(player.getHungerManager().getSaturationLevel() - 6);
                     if (player.getHungerManager().getSaturationLevel() < 0) {
                         player.getHungerManager().setSaturationLevel(0f);

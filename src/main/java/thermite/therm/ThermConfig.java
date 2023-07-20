@@ -35,17 +35,27 @@ public class ThermConfig extends Config {
 
 
     //gui
-    @ConfigEntry(comment = "X coordinate of temperature UI relative to its default position.")
+    @ConfigEntry(comment = "X coordinate of temperature UI relative to its default position. (Default: 0)")
     public int temperatureXPos = 0;
 
-    @ConfigEntry(comment = "Y coordinate of temperature UI relative to its default position.")
+    @ConfigEntry(comment = "Y coordinate of temperature UI relative to its default position. (Default: 0)")
     public int temperatureYPos = 0;
 
-    @ConfigEntry(comment = "X coordinate of thermometer UI relative to its default position.")
+    @ConfigEntry(comment = "X coordinate of thermometer UI relative to its default position. (Default: 0)")
     public int thermometerXPos = 0;
 
-    @ConfigEntry(comment = "Y coordinate of thermometer UI relative to its default position.")
+    @ConfigEntry(comment = "Y coordinate of thermometer UI relative to its default position. (Default: 0)")
     public int thermometerYPos = 0;
+
+    //game
+    @ConfigEntry(comment = "Multiplier for how much each level of fire protection cools you (Default: 0.5)")
+    public float fireProtectionCoolingMultiplier = 0.5f;
+
+    @ConfigEntry(comment = "Hyperthermia damage per 5 seconds. (Default: 1.0)")
+    public float hyperthermiaDamage = 1.0f;
+
+    @ConfigEntry(comment = "Hypothermia damage per 5 seconds. (Default: 1.0)")
+    public float hypothermiaDamage = 1.0f;
 
     public ThermConfig() {
         super(ConfigOptions.mod(ThermMod.modid));
