@@ -20,6 +20,7 @@ import thermite.therm.ServerState;
 import thermite.therm.ThermMod;
 import thermite.therm.ThermPlayerState;
 import thermite.therm.ThermUtil;
+import thermite.therm.block.FireplaceBlock;
 import thermite.therm.block.ThermBlocks;
 import thermite.therm.networking.ThermNetworkingPackets;
 import thermite.therm.util.BlockStatePosPair;
@@ -106,7 +107,7 @@ public class PlayerTempTickC2SPacket {
             }
         } else if (precip == Biome.Precipitation.SNOW) {
             if (player.getWorld().isRaining()) {
-                playerState.restingTemp -= 18;
+                playerState.restingTemp -= 16;
             }
         }
 
@@ -150,6 +151,17 @@ public class PlayerTempTickC2SPacket {
         playerState.restingTemp -= (ice.get() * 1);
         playerState.restingTemp -= (packed_ice.get() * 3);
         playerState.restingTemp -= (blue_ice.get() * 6);
+
+        AtomicInteger fireplaces = new AtomicInteger();
+        Stream<BlockState> fireplaceBox = player.getWorld().getStatesInBox(Box.of(pos, 8, 8, 8));
+        fireplaceBox.forEach((state) -> {
+            if (state.isOf(ThermBlocks.FIREPLACE_BLOCK)) {
+                if (state.get(FireplaceBlock.LIT)) {
+                    fireplaces.addAndGet(1);
+                }
+            }
+        });
+        playerState.restingTemp += (fireplaces.get() * 16);
 
         if (player.isTouchingWater()) {
             playerState.restingTemp -= 10;

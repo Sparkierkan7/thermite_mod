@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "lit=false": { "model": "therm:block/fireplace" },
+    "lit=true": { "model": "therm:block/fireplace_lit" }
+  }
+}
