@@ -34,6 +34,11 @@ The ice box is a new block added that can be used to get ice easier before getti
 
 When it is in a frozen state it will act like packed ice and cool you down by 3 if you are near enough. But it will slowly melt and turn back into its unfrozen state in biomes than are not cold or frigid. The hotter the biome the faster it melts.
 
+### Brick Fireplace Mechanics
+The brick fireplace block, when lit, will heat you up by 16 in a large radius. You can light it by right clicking it with fuel items. Coal and charcoal fuel it for 100 seconds, coal blocks 900 seconds and sticks 10 seconds.
+
+Putting brick walls, cobblestone walls or stone brick walls above the fireplace cause the smoke it makes to come out above the walls like a chimney.
+
 ### UI and Thermometer
 The UI is a gauge on your bottom left. The black slider will slide left when you get cold and right when you get hot. The range is 0 - 100 where 50 is your preferred temperature.
 
@@ -74,6 +79,3 @@ When enabled your temperature will be affected by the current season. Its main p
 
 ### Config
 Config file path is "config/therm.conf", if you want something added to the config create an issue on github.
-
-
-
