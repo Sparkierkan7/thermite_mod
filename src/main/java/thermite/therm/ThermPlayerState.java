@@ -13,5 +13,7 @@ public class ThermPlayerState {
     public String damageType = "";
     public int damageTick = 0;
     public int maxDamageTick = 10;
+    public int searchFireplaceTick = 4;
+    public int fireplaces = 0;
 
 }

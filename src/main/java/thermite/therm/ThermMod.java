@@ -4,6 +4,7 @@ import me.lortseam.completeconfig.data.ConfigOptions;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -12,10 +13,12 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,9 @@ import thermite.therm.item.GoldSweetBerriesItem;
 import thermite.therm.item.IceJuiceItem;
 import thermite.therm.item.ThermometerItem;
 import thermite.therm.networking.ThermNetworkingPackets;
+
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class ThermMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("therm");
@@ -68,6 +74,7 @@ public class ThermMod implements ModInitializer {
 		Registry.register(Registries.BLOCK, new Identifier(modid, "ice_box_freezing"), ThermBlocks.ICE_BOX_FREEZING_BLOCK);
 		Registry.register(Registries.BLOCK, new Identifier(modid, "ice_box_frozen"), ThermBlocks.ICE_BOX_FROZEN_BLOCK);
 		Registry.register(Registries.BLOCK, new Identifier(modid, "fireplace"), ThermBlocks.FIREPLACE_BLOCK);
+		Registry.register(Registries.BLOCK, new Identifier(modid, "smoke"), ThermBlocks.SMOKE_BLOCK);
 
 		//block item registry
 		Registry.register(Registries.ITEM, new Identifier(modid, "ice_box_empty_item"), ICE_BOX_EMPTY_ITEM);
@@ -90,12 +97,6 @@ public class ThermMod implements ModInitializer {
 			content.add(FIREPLACE_ITEM);
 		});
 
-		//block entities
-		/*FIREPLACE_BLOCK_ENTITY = Registry.register(
-				Registries.BLOCK_ENTITY_TYPE,
-				new Identifier(modid, "fireplace_block_enttity"),
-				FabricBlockEntityTypeBuilder.create(FireplaceBlockEntity::new, ThermBlocks.FIREPLACE_BLOCK).build()
-		);*/
 
 		ThermNetworkingPackets.registerC2SPackets();
 
@@ -106,6 +107,31 @@ public class ThermMod implements ModInitializer {
 			ThermPlayerState playerState = ServerState.getPlayerState(handler.player);
 
 		});
+
+		//commands
+		//thermite_resetPlayerState command
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("thermite_resetPlayerState").requires(source -> source.hasPermissionLevel(4))
+				.then(argument("player", EntityArgumentType.player())
+						.executes(context -> {
+
+							ServerState serverState = ServerState.getServerState(EntityArgumentType.getPlayer(context, "player").getWorld().getServer());
+							ThermPlayerState playerState = ServerState.getPlayerState(EntityArgumentType.getPlayer(context, "player"));
+
+							playerState.temp = 50;
+							playerState.tempRate = 0.0625;
+							playerState.restingTemp = 404;
+							playerState.minTemp = -400;
+							playerState.maxTemp = 400;
+							playerState.damageType = "";
+							playerState.damageTick = 0;
+							playerState.maxDamageTick = 10;
+							playerState.searchFireplaceTick = 4;
+							serverState.markDirty();
+
+							context.getSource().sendMessage(Text.literal("Reset " + EntityArgumentType.getPlayer(context, "player").getName().getString() + "'s playerState."));
+
+							return 1;
+						}))));
 
 		//server tick
 		ServerTickEvents.START_SERVER_TICK.register((server) -> {

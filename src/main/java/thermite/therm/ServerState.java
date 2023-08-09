@@ -36,6 +36,7 @@ public class ServerState extends PersistentState {
             playerStateNbt.putString("damageType", playerSate.damageType);
             playerStateNbt.putInt("damageTick", playerSate.damageTick);
             playerStateNbt.putInt("maxDamageTick", playerSate.maxDamageTick);
+            playerStateNbt.putInt("searchFireplaceTick", playerSate.searchFireplaceTick);
 
             playersNbtCompound.put(String.valueOf(UUID), playerStateNbt);
         });
@@ -66,6 +67,7 @@ public class ServerState extends PersistentState {
             playerState.damageType = playersTag.getCompound(key).getString("damageType");
             playerState.damageTick = playersTag.getCompound(key).getInt("damageTick");
             playerState.maxDamageTick = playersTag.getCompound(key).getInt("maxDamageTick");
+            playerState.searchFireplaceTick = playersTag.getCompound(key).getInt("searchFireplaceTick");
 
             UUID uuid = UUID.fromString(key);
             serverState.players.put(uuid, playerState);

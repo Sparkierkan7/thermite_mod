@@ -3,6 +3,11 @@ package thermite.therm;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.ConfigOptions;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ThermConfig extends Config {
 
@@ -56,6 +61,18 @@ public class ThermConfig extends Config {
 
     @ConfigEntry(comment = "Hypothermia damage per 5 seconds. (Default: 1.0)")
     public float hypothermiaDamage = 1.0f;
+
+    @ConfigEntry(comment = "Helmets that will change your temperature.")
+    public Map<String, Integer> helmetTempItems = new HashMap(Map.of("leather_helmet", 1));
+
+    @ConfigEntry(comment = "Chestplates that will change your temperature.")
+    public Map<String, Integer> chestplateTempItems = new HashMap(Map.of("leather_chestplate", 3));
+
+    @ConfigEntry(comment = "Leggings that will change your temperature.")
+    public Map<String, Integer> leggingTempItems = new HashMap(Map.of("leather_leggings", 2));
+
+    @ConfigEntry(comment = "Boots that will change your temperature.")
+    public Map<String, Integer> bootTempItems = new HashMap(Map.of("leather_boots", 1));
 
     public ThermConfig() {
         super(ConfigOptions.mod(ThermMod.modid));

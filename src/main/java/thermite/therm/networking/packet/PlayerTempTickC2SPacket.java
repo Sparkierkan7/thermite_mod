@@ -152,34 +152,49 @@ public class PlayerTempTickC2SPacket {
         playerState.restingTemp -= (packed_ice.get() * 3);
         playerState.restingTemp -= (blue_ice.get() * 6);
 
-        AtomicInteger fireplaces = new AtomicInteger();
-        Stream<BlockState> fireplaceBox = player.getWorld().getStatesInBox(Box.of(pos, 8, 8, 8));
-        fireplaceBox.forEach((state) -> {
-            if (state.isOf(ThermBlocks.FIREPLACE_BLOCK)) {
-                if (state.get(FireplaceBlock.LIT)) {
-                    fireplaces.addAndGet(1);
+        if (playerState.searchFireplaceTick <= 0) {
+            playerState.searchFireplaceTick = 4;
+            AtomicInteger fireplaces = new AtomicInteger();
+            Stream<BlockState> fireplaceBox = player.getWorld().getStatesInBox(Box.of(pos, 12, 12, 12));
+            fireplaceBox.forEach((state) -> {
+                if (state.isOf(ThermBlocks.FIREPLACE_BLOCK)) {
+                    if (state.get(FireplaceBlock.LIT)) {
+                        fireplaces.addAndGet(1);
+                    }
                 }
-            }
-        });
-        playerState.restingTemp += (fireplaces.get() * 16);
+            });
+            playerState.fireplaces = fireplaces.get();
+        }
+        playerState.restingTemp += (playerState.fireplaces * 14);
+        playerState.searchFireplaceTick -= 1;
 
         if (player.isTouchingWater()) {
             playerState.restingTemp -= 10;
         }
 
-        //leather armor
-        if (player.getInventory().getArmorStack(0).getItem() == Items.LEATHER_BOOTS) { //boot
-            playerState.restingTemp += 1;
-        }
-        if (player.getInventory().getArmorStack(1).getItem() == Items.LEATHER_LEGGINGS) { //leggings
-            playerState.restingTemp += 2;
-        }
-        if (player.getInventory().getArmorStack(2).getItem() == Items.LEATHER_CHESTPLATE) { //chestplate
-            playerState.restingTemp += 3;
-        }
-        if (player.getInventory().getArmorStack(3).getItem() == Items.LEATHER_HELMET) { //helmet
-            playerState.restingTemp += 1;
-        }
+        //armor items
+        ThermMod.config.bootTempItems.forEach((it, t) -> {
+            if (Objects.equals(player.getInventory().getArmorStack(0).getItem().toString(), it)) {
+                playerState.restingTemp += t;
+            }
+        });
+        ThermMod.config.leggingTempItems.forEach((it, t) -> {
+            if (Objects.equals(player.getInventory().getArmorStack(1).getItem().toString(), it)) {
+                playerState.restingTemp += t;
+            }
+        });
+        ThermMod.config.chestplateTempItems.forEach((it, t) -> {
+            if (Objects.equals(player.getInventory().getArmorStack(2).getItem().toString(), it)) {
+                playerState.restingTemp += t;
+            }
+        });
+        ThermMod.config.helmetTempItems.forEach((it, t) -> {
+            if (Objects.equals(player.getInventory().getArmorStack(3).getItem().toString(), it)) {
+                playerState.restingTemp += t;
+            }
+        });
+
+        //ThermMod.LOGGER.info("item: " + player.getInventory().getArmorStack(3).getItem().toString());
 
         //fire protection
         int fireProt = 0;
