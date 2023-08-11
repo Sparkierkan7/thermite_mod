@@ -5,6 +5,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.particle.CampfireSmokeParticle;
+import net.minecraft.datafixer.fix.ChunkPalettedStorageFix;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -58,21 +59,21 @@ public class FireplaceBlock extends BlockWithEntity implements BlockEntityProvid
         ItemStack stack = player.getStackInHand(hand);
 
         if (stack.getItem() == Items.COAL || stack.getItem() == Items.CHARCOAL) {
-            world.setBlockState(pos, state.with(LIT, true));
+            world.setBlockState(pos, state.with(LIT, true).with(FACING, state.get(FACING)));
             FireplaceBlockEntity blockEntity = (FireplaceBlockEntity) world.getBlockEntity(pos);
             blockEntity.setTime(blockEntity.getTime() + 1200);
             blockEntity.markDirty();
             stack.setCount(stack.getCount() - 1);
             world.playSound(null, pos, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.BLOCKS, 0.25f, 0.5f);
         } else if (stack.getItem() == Items.COAL_BLOCK) {
-            world.setBlockState(pos, state.with(LIT, true));
+            world.setBlockState(pos, state.with(LIT, true).with(FACING, state.get(FACING)));
             FireplaceBlockEntity blockEntity = (FireplaceBlockEntity) world.getBlockEntity(pos);
             blockEntity.setTime(blockEntity.getTime() + 10800);
             blockEntity.markDirty();
             stack.setCount(stack.getCount() - 1);
             world.playSound(null, pos, SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.BLOCKS, 0.25f, 0.5f);
         } else if (stack.getItem() == Items.STICK) {
-            world.setBlockState(pos, state.with(LIT, true));
+            world.setBlockState(pos, state.with(LIT, true).with(FACING, state.get(FACING)));
             FireplaceBlockEntity blockEntity = (FireplaceBlockEntity) world.getBlockEntity(pos);
             blockEntity.setTime(blockEntity.getTime() + 100);
             blockEntity.markDirty();

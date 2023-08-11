@@ -1,11 +1,9 @@
 {
-  "parent": "block/cube",
+  "parent": "block/orientable",
   "textures": {
-    "up": "therm:block/fireplace_top",
-    "down": "therm:block/fireplace_blank",
-    "north": "therm:block/fireplace_front_lit",
-    "east": "therm:block/fireplace_blank",
-    "south": "therm:block/fireplace_blank",
-    "west": "therm:block/fireplace_blank"
+    "front": "therm:block/fireplace_front_lit",
+    "side": "therm:block/fireplace_blank",
+    "top": "therm:block/fireplace_top",
+    "bottom": "therm:block/fireplace_blank"
   }
 }

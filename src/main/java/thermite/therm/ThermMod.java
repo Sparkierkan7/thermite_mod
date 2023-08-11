@@ -29,12 +29,15 @@ import thermite.therm.item.IceJuiceItem;
 import thermite.therm.item.ThermometerItem;
 import thermite.therm.networking.ThermNetworkingPackets;
 
+import java.util.Objects;
+
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class ThermMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("therm");
 	public static final String modid = "therm";
+	public static final String modVersion = "3.2.0";
 
 	//items
 	public static final GoldSweetBerriesItem GOLD_SWEET_BERRIES_ITEM = new GoldSweetBerriesItem(new FabricItemSettings().maxCount(64));
@@ -105,6 +108,10 @@ public class ThermMod implements ModInitializer {
 
 			ServerState serverState = ServerState.getServerState(handler.player.getWorld().getServer());
 			ThermPlayerState playerState = ServerState.getPlayerState(handler.player);
+
+			if (!Objects.equals(serverState.worldVersion, modVersion)) {
+
+			}
 
 		});
 

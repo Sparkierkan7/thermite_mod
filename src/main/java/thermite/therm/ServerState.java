@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class ServerState extends PersistentState {
 
+    String worldVersion = "3.2.0";
     int testInt = 0;
     public int season = 0;
     public int seasonTick = 0;
@@ -42,6 +43,7 @@ public class ServerState extends PersistentState {
         });
         nbt.put("players", playersNbtCompound);
 
+        nbt.putString("worldVersion", worldVersion);
         nbt.putInt("testInt", testInt);
         nbt.putInt("season", season);
         nbt.putInt("seasonTick", seasonTick);
@@ -73,6 +75,7 @@ public class ServerState extends PersistentState {
             serverState.players.put(uuid, playerState);
         });
 
+        serverState.worldVersion = tag.getString("worldVersion");
         serverState.testInt = tag.getInt("testInt");
         serverState.season = tag.getInt("season");
         serverState.seasonTick = tag.getInt("seasonTick");
