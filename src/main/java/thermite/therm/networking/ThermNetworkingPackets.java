@@ -15,19 +15,18 @@ public class ThermNetworkingPackets {
     public static final Identifier DRINK_ICE_JUICE_C2S_PACKET_ID = new Identifier(ThermMod.modid, "drink_ice_juice_c2s_packet");
 
     //s2c
-    public static final Identifier SEND_THERMPLAYERSTATE_C2S_PACKET_ID = new Identifier(ThermMod.modid, "send_thermplayerstate_c2s_packet");
+    public static final Identifier SEND_THERMPLAYERSTATE_S2C_PACKET_ID = new Identifier(ThermMod.modid, "send_thermplayerstate_s2c_packet");
 
     public static void registerC2SPackets() {
 
         ServerPlayNetworking.registerGlobalReceiver(PLAYER_TEMP_TICK_C2S_PACKET_ID, PlayerTempTickC2SPacket::receive);
         ServerPlayNetworking.registerGlobalReceiver(DRINK_ICE_JUICE_C2S_PACKET_ID, DrinkIceJuiceC2SPacket::receive);
 
-
     }
 
     public static void registerS2CPackets() {
 
-        ClientPlayNetworking.registerGlobalReceiver(SEND_THERMPLAYERSTATE_C2S_PACKET_ID, (client, handler, buf, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(SEND_THERMPLAYERSTATE_S2C_PACKET_ID, (client, handler, buf, responseSender) -> {
             double temperature = buf.readDouble();
             short td = buf.readShort();
             client.execute(() -> {

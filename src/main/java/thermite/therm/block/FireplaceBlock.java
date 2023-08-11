@@ -6,6 +6,7 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.particle.CampfireSmokeParticle;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
@@ -13,10 +14,12 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import thermite.therm.ThermMod;
@@ -27,15 +30,21 @@ import java.util.Objects;
 public class FireplaceBlock extends BlockWithEntity implements BlockEntityProvider {
 
     public static final BooleanProperty LIT = BooleanProperty.of("lit");
+    public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
 
     public FireplaceBlock(Settings settings) {
         super(settings);
-        setDefaultState(getDefaultState().with(LIT, false));
+        setDefaultState(getDefaultState().with(LIT, false).with(FACING, Direction.NORTH));
+    }
+
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        return (BlockState)this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(LIT);
+        builder.add(LIT, FACING);
     }
 
     @Override

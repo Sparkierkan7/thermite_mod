@@ -7,7 +7,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -50,33 +49,32 @@ public class PlayerTempTickC2SPacket {
         if (Objects.equals(climate, "frigid")) {
             playerState.minTemp = 0;
             playerState.maxTemp = 80;
-            playerState.restingTemp = 25;
+            playerState.restingTemp = ThermMod.config.frigidClimateTemp;
             nightRTemp = -10;
         } else if (Objects.equals(climate, "cold")) {
             playerState.minTemp = 0;
             playerState.maxTemp = 100;
-            playerState.restingTemp = 30;
+            playerState.restingTemp = ThermMod.config.coldClimateTemp;
             nightRTemp = -10;
         } else if (Objects.equals(climate, "temperate")) {
             playerState.minTemp = 0;
             playerState.maxTemp = 100;
-            playerState.restingTemp = 50;
+            playerState.restingTemp = ThermMod.config.temperateClimateTemp;
             nightRTemp = -10;
         } else if (Objects.equals(climate, "hot")) {
             playerState.minTemp = 40;
             playerState.maxTemp = 120;
-            playerState.restingTemp = 55;
+            playerState.restingTemp = ThermMod.config.hotClimateTemp;
             nightRTemp = -8;
         } else if (Objects.equals(climate, "arid")) {
             playerState.minTemp = 40;
             playerState.maxTemp = 120;
-            playerState.restingTemp = 70;
+            playerState.restingTemp = ThermMod.config.aridClimateTemp;
             nightRTemp = -15;
         }
 
         if (ThermMod.config.enableSeasonSystem) {
             int season = serverState.season;
-
             if (season == 1) {
                 playerState.restingTemp += (8 * ThermMod.config.seasonTemperatureExtremenessMultiplier);
             } else if (season == 2) {
@@ -84,13 +82,11 @@ public class PlayerTempTickC2SPacket {
             } else if (season == 3) {
                 playerState.restingTemp -= (12 * ThermMod.config.seasonTemperatureExtremenessMultiplier);
             }
-
         }
 
         DimensionType dim = player.getWorld().getDimension();
 
         if (dim.natural()) {
-            //time >= 13313 && time <= 23013
             if (!player.getWorld().isDay()) { //its nighttime in overworld so make colder
                 playerState.restingTemp += nightRTemp;
             }
@@ -107,7 +103,7 @@ public class PlayerTempTickC2SPacket {
             }
         } else if (precip == Biome.Precipitation.SNOW) {
             if (player.getWorld().isRaining()) {
-                playerState.restingTemp -= 16;
+                playerState.restingTemp -= 12;
             }
         }
 
@@ -215,16 +211,16 @@ public class PlayerTempTickC2SPacket {
             tempDir = -1;
         } else if (Math.round(playerState.restingTemp) == Math.round(playerState.temp)) {tempDir = 0;}
 
-        if (playerState.temp <= 35 && playerState.temp > 25) {
+        if (playerState.temp <= ThermMod.config.freezeThreshold1 && playerState.temp > ThermMod.config.freezeThreshold2) {
             playerState.damageType = "freeze";
             playerState.maxDamageTick = 6;
-        } else if (playerState.temp <= 25) {
+        } else if (playerState.temp <= ThermMod.config.freezeThreshold2) {
             playerState.damageType = "freeze";
             playerState.maxDamageTick = 4;
-        } else if (playerState.temp >= 65 && playerState.temp < 75) {
+        } else if (playerState.temp >= ThermMod.config.burnThreshold1 && playerState.temp < ThermMod.config.burnThreshold2) {
             playerState.damageType = "burn";
             playerState.maxDamageTick = 6;
-        } else if (playerState.temp >= 75) {
+        } else if (playerState.temp >= ThermMod.config.burnThreshold2) {
             playerState.damageType = "burn";
             playerState.maxDamageTick = 4;
         } else {
@@ -274,7 +270,7 @@ public class PlayerTempTickC2SPacket {
         PacketByteBuf sendingdata = PacketByteBufs.create();
         sendingdata.writeDouble(playerState.temp);
         sendingdata.writeShort(tempDir);
-        ServerPlayNetworking.send(player, ThermNetworkingPackets.SEND_THERMPLAYERSTATE_C2S_PACKET_ID, sendingdata);
+        ServerPlayNetworking.send(player, ThermNetworkingPackets.SEND_THERMPLAYERSTATE_S2C_PACKET_ID, sendingdata);
 
         serverState.markDirty();
 

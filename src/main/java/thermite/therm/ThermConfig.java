@@ -12,7 +12,7 @@ import java.util.Map;
 public class ThermConfig extends Config {
 
     //seasons
-    @ConfigEntry(comment = "A small built in season system that affects your temperature depending on the season. You can configure the length of each season in half seconds, (one minecraft day = 2400 half seconds).")
+    @ConfigEntry(comment = "(Experimental) A small built in season system that affects your temperature depending on the season. You can configure the length of each season in half seconds, (one minecraft day = 2400 half seconds).")
     public boolean enableSeasonSystem = false;
 
     @ConfigEntry(comment = "Length of spring (Default: 48000 half seconds = 20 days).")
@@ -35,7 +35,7 @@ public class ThermConfig extends Config {
 
 
     //weather
-    @ConfigEntry(comment = "(Experimental) makes weather reflect the current season. If you enable this make sure to run (/gamerule doWeatherCycle false) to disable the vanilla weather cycle.")
+    @ConfigEntry(comment = "(Experimental) Makes weather reflect the current season. If you enable this make sure to run (/gamerule doWeatherCycle false) to disable the vanilla weather cycle.")
     public boolean seasonalWeather = false;
 
 
@@ -73,6 +73,33 @@ public class ThermConfig extends Config {
 
     @ConfigEntry(comment = "Boots that will change your temperature.")
     public Map<String, Integer> bootTempItems = new HashMap(Map.of("leather_boots", 1));
+
+    @ConfigEntry(comment = "Base temperature for frigid climates. (Default: 25.0)")
+    public double frigidClimateTemp = 25;
+
+    @ConfigEntry(comment = "Base temperature for cold climates. (Default: 30.0)")
+    public double coldClimateTemp = 30;
+
+    @ConfigEntry(comment = "Base temperature for temperate climates. (Default: 50.0)")
+    public double temperateClimateTemp = 50;
+
+    @ConfigEntry(comment = "Base temperature for hot climates. (Default: 55.0)")
+    public double hotClimateTemp = 55;
+
+    @ConfigEntry(comment = "Base temperature for arid climates. (Default: 70.0)")
+    public double aridClimateTemp = 70;
+
+    @ConfigEntry(comment = "First threshold for hypothermia, being below this you will start to freeze (Default: 35)")
+    public int freezeThreshold1 = 35;
+
+    @ConfigEntry(comment = "Second threshold for hypothermia, being below this you will freeze faster. (Default: 25)")
+    public int freezeThreshold2 = 25;
+
+    @ConfigEntry(comment = "First threshold for hyperthermia, being above this you will start to burn (Default: 65)")
+    public int burnThreshold1 = 65;
+
+    @ConfigEntry(comment = "Second threshold for hyperthermia, being above this you will burn faster (Default: 75)")
+    public int burnThreshold2 = 75;
 
     public ThermConfig() {
         super(ConfigOptions.mod(ThermMod.modid));
