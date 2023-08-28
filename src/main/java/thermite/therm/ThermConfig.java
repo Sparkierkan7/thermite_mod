@@ -74,6 +74,9 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "Boots that will change your temperature.")
     public Map<String, Integer> bootTempItems = new HashMap(Map.of("leather_boots", 1));
 
+    @ConfigEntry(comment = "Items that when held will change your temperature.")
+    public Map<String, Integer> heldTempItems = new HashMap(Map.of("torch", 3, "lava_bucket", 3));
+
     @ConfigEntry(comment = "Base temperature for frigid climates. (Default: 25.0)")
     public double frigidClimateTemp = 25;
 

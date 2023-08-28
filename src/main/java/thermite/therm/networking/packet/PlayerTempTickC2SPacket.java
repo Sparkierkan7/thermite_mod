@@ -189,14 +189,22 @@ public class PlayerTempTickC2SPacket {
                 playerState.restingTemp += t;
             }
         });
-
-        //ThermMod.LOGGER.info("item: " + player.getInventory().getArmorStack(3).getItem().toString());
+        ThermMod.config.heldTempItems.forEach((it, t) -> {
+            if (Objects.equals(player.getInventory().getMainHandStack().getItem().toString(), it)) {
+                playerState.restingTemp += t;
+            }
+            if (Objects.equals(player.getInventory().offHand.get(0).getItem().toString(), it)) {
+                playerState.restingTemp += t;
+            }
+        });
 
         //fire protection
         int fireProt = 0;
         for (int i = 0; i < 4; i++) {
-            if (Objects.equals(player.getInventory().getArmorStack(i).getEnchantments().getCompound(0).getString("id"), "minecraft:fire_protection")) {
-                fireProt += player.getInventory().getArmorStack(i).getEnchantments().getCompound(0).getInt("lvl");
+            for (int j = 0; j < player.getInventory().getArmorStack(i).getEnchantments().size(); j++) {
+                if (Objects.equals(player.getInventory().getArmorStack(i).getEnchantments().getCompound(j).getString("id"), "minecraft:fire_protection")) {
+                    fireProt += player.getInventory().getArmorStack(i).getEnchantments().getCompound(j).getInt("lvl");
+                }
             }
         }
         playerState.restingTemp -= (fireProt * ThermMod.config.fireProtectionCoolingMultiplier);
@@ -240,14 +248,11 @@ public class PlayerTempTickC2SPacket {
                 }
             }
         } else if (Objects.equals(playerState.damageType, "burn")) {
-
             boolean res = false;
-
             try {
                 String fireRes = Objects.requireNonNull(player.getStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE).getEffectType())).getEffectType().getName().getString();
                 res = true;
             } catch (NullPointerException err) {res = false;}
-
             if (!res) {
                 if (playerState.damageTick < playerState.maxDamageTick) {
                     playerState.damageTick += 1;

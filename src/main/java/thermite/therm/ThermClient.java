@@ -28,7 +28,6 @@ public class ThermClient implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register((client) -> {
             if (client.world != null) {
                 if (client.world.isClient()) {
-
                     if (tempTickCounter < tempTickCount) {
                         tempTickCounter += 1;
                     } else if (tempTickCounter >= tempTickCount) {
