@@ -110,6 +110,12 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "Second threshold for hyperthermia, being above this you will burn faster (Default: 75)")
     public int burnThreshold2 = 75;
 
+    @ConfigEntry(comment = "Damage interval for hypothermia and hyperthermia in seconds (Default: 3)")
+    public int temperatureDamageInterval = 3;
+
+    @ConfigEntry(comment = "Damage interval for extreme hypothermia and hyperthermia in seconds (Default: 2)")
+    public int extremetemperatureDamageInterval = 2;
+
     public ThermConfig() {
         super(ConfigOptions.mod(ThermMod.modid));
     }

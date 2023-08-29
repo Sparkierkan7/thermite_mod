@@ -198,16 +198,16 @@ public class PlayerTempTickC2SPacket {
 
         if (playerState.temp <= ThermMod.config.freezeThreshold1 && playerState.temp > ThermMod.config.freezeThreshold2) {
             playerState.damageType = "freeze";
-            playerState.maxDamageTick = 6;
+            playerState.maxDamageTick = ThermMod.config.temperatureDamageInterval;
         } else if (playerState.temp <= ThermMod.config.freezeThreshold2) {
             playerState.damageType = "freeze";
-            playerState.maxDamageTick = 4;
+            playerState.maxDamageTick = ThermMod.config.extremetemperatureDamageInterval;
         } else if (playerState.temp >= ThermMod.config.burnThreshold1 && playerState.temp < ThermMod.config.burnThreshold2) {
             playerState.damageType = "burn";
-            playerState.maxDamageTick = 6;
+            playerState.maxDamageTick = ThermMod.config.temperatureDamageInterval;
         } else if (playerState.temp >= ThermMod.config.burnThreshold2) {
             playerState.damageType = "burn";
-            playerState.maxDamageTick = 4;
+            playerState.maxDamageTick = ThermMod.config.extremetemperatureDamageInterval;
         } else {
             playerState.damageTick = 0;
             playerState.damageType = "";
@@ -216,7 +216,8 @@ public class PlayerTempTickC2SPacket {
         if (Objects.equals(playerState.damageType, "freeze")) {
             if (playerState.damageTick < playerState.maxDamageTick) {
                 playerState.damageTick += 1;
-            } else if (playerState.damageTick >= playerState.maxDamageTick) {
+            }
+            if (playerState.damageTick >= playerState.maxDamageTick) {
                 playerState.damageTick = 0;
                 player.damage(player.getWorld().getDamageSources().freeze(), ThermMod.config.hypothermiaDamage);
                 player.getHungerManager().setSaturationLevel(player.getHungerManager().getSaturationLevel() - 6);
@@ -233,7 +234,8 @@ public class PlayerTempTickC2SPacket {
             if (!res) {
                 if (playerState.damageTick < playerState.maxDamageTick) {
                     playerState.damageTick += 1;
-                } else if (playerState.damageTick >= playerState.maxDamageTick) {
+                }
+                if (playerState.damageTick >= playerState.maxDamageTick) {
                     playerState.damageTick = 0;
                     player.damage(player.getWorld().getDamageSources().onFire(), ThermMod.config.hyperthermiaDamage);
                     player.getHungerManager().setSaturationLevel(player.getHungerManager().getSaturationLevel() - 6);
