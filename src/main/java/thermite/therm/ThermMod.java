@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -16,10 +17,14 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.TypedActionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thermite.therm.block.ThermBlocks;
@@ -115,32 +120,6 @@ public class ThermMod implements ModInitializer {
 
 		});
 
-		//commands
-		//thermite_resetPlayerState command
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("thermite_resetPlayerState").requires(source -> source.hasPermissionLevel(4))
-				.then(argument("player", EntityArgumentType.player())
-						.executes(context -> {
-
-							ServerState serverState = ServerState.getServerState(EntityArgumentType.getPlayer(context, "player").getWorld().getServer());
-							ThermPlayerState playerState = ServerState.getPlayerState(EntityArgumentType.getPlayer(context, "player"));
-
-							playerState.temp = 50;
-							playerState.tempRate = 0.0625;
-							playerState.restingTemp = 404;
-							playerState.minTemp = -400;
-							playerState.maxTemp = 400;
-							playerState.damageType = "";
-							playerState.damageTick = 0;
-							playerState.maxDamageTick = 10;
-							playerState.searchFireplaceTick = 4;
-							serverState.markDirty();
-
-							context.getSource().sendMessage(Text.literal("Reset " + EntityArgumentType.getPlayer(context, "player").getName().getString() + "'s playerState."));
-
-							return 1;
-						}))));
-
-		//server tick
 		ServerTickEvents.START_SERVER_TICK.register((server) -> {
 			ServerState serverState = ServerState.getServerState(server);
 
@@ -224,6 +203,31 @@ public class ThermMod implements ModInitializer {
 				serverState.markDirty();
 			}
 		});
+
+		//commands
+		//thermite_resetPlayerState command
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("thermite_resetPlayerState").requires(source -> source.hasPermissionLevel(4))
+				.then(argument("player", EntityArgumentType.player())
+						.executes(context -> {
+
+							ServerState serverState = ServerState.getServerState(EntityArgumentType.getPlayer(context, "player").getWorld().getServer());
+							ThermPlayerState playerState = ServerState.getPlayerState(EntityArgumentType.getPlayer(context, "player"));
+
+							playerState.temp = 50;
+							playerState.tempRate = 0.0625;
+							playerState.restingTemp = 404;
+							playerState.minTemp = -400;
+							playerState.maxTemp = 400;
+							playerState.damageType = "";
+							playerState.damageTick = 0;
+							playerState.maxDamageTick = 10;
+							playerState.searchFireplaceTick = 4;
+							serverState.markDirty();
+
+							context.getSource().sendMessage(Text.literal("Reset " + EntityArgumentType.getPlayer(context, "player").getName().getString() + "'s playerState."));
+
+							return 1;
+						}))));
 
 	}
 }

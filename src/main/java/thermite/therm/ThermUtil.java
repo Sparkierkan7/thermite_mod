@@ -1,8 +1,10 @@
 package thermite.therm;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import thermite.therm.util.BlockStatePosPair;
 
 import java.util.ArrayList;

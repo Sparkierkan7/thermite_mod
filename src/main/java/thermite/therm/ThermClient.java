@@ -2,9 +2,13 @@ package thermite.therm;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import org.lwjgl.glfw.GLFW;
 import thermite.therm.client.TemperatureHudOverlay;
 import thermite.therm.networking.ThermNetworkingPackets;
 
@@ -14,10 +18,20 @@ public class ThermClient implements ClientModInitializer {
     public static short clientStoredTempDir = 32;
 
     public static int tempTickCounter = 0;
-    public static final int tempTickCount = 10;
+    public static final int tempTickCount = 20;
+
+    public static boolean showGui = true;
+    private static KeyBinding showGuiKey;
 
     @Override
     public void onInitializeClient() {
+
+        showGuiKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "Toggle Temperature Gui",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_X,
+                "Thermite"
+        ));
 
         ThermNetworkingPackets.registerS2CPackets();
 
@@ -36,6 +50,16 @@ public class ThermClient implements ClientModInitializer {
                     }
                 }
             }
+
+            //keybinds
+            while (showGuiKey.wasPressed()) {
+                if (showGui) {
+                    showGui = false;
+                } else {
+                    showGui = true;
+                }
+            }
+
         });
 
     }

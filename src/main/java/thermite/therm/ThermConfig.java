@@ -77,6 +77,12 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "Items that when held will change your temperature.")
     public Map<String, Integer> heldTempItems = new HashMap(Map.of("torch", 3, "lava_bucket", 3));
 
+    @ConfigEntry(comment = "Blocks that will heat you up when near.")
+    public Map<String, Integer> heatingBlocks = new HashMap(Map.of("Block{minecraft:torch}", 3, "Block{minecraft:fire}", 3, "Block{minecraft:lava}", 8, "Block{minecraft:campfire}", 15));
+
+    @ConfigEntry(comment = "Blocks that will cool you down when near.")
+    public Map<String, Integer> coolingBlocks = new HashMap(Map.of("Block{minecraft:ice}", 1, "Block{minecraft:packed_ice}", 3, "Block{minecraft:blue_ice}", 6));
+
     @ConfigEntry(comment = "Base temperature for frigid climates. (Default: 25.0)")
     public double frigidClimateTemp = 25;
 

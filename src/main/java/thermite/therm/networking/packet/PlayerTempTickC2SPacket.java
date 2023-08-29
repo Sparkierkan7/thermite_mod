@@ -108,45 +108,22 @@ public class PlayerTempTickC2SPacket {
         }
 
         Vec3d pos = player.getPos();
-        int torches = 0;
-        int lava = 0;
-        int campfires = 0;
-        int fires = 0;
-        ArrayList<BlockStatePosPair> box = ThermUtil.getBlockBox(player.getWorld(), (int)(pos.x - 3), (int)(pos.y - 3), (int)(pos.z - 3), (int)(pos.x + 3), (int)(pos.y + 3), (int)(pos.z + 3));
-        for (int i = 0; i < box.size(); i++) {
-            if (Objects.equals(box.get(i).blockState.getBlock().getName(), Blocks.TORCH.getName())) {
-                torches += 1;
-            } else if (Objects.equals(box.get(i).blockState.getBlock().getName(), Blocks.LAVA.getName())) {
-                lava += 1;
-            } else if (Objects.equals(box.get(i).blockState.getBlock().getName(), Blocks.CAMPFIRE.getName()) || Objects.equals(box.get(i).blockState.getBlock().getName(), Blocks.SOUL_CAMPFIRE.getName())) {
-                campfires += 1;
-            } else if (Objects.equals(box.get(i).blockState.getBlock().getName(), Blocks.FIRE.getName()) || Objects.equals(box.get(i).blockState.getBlock().getName(), Blocks.SOUL_FIRE.getName())) {
-                fires += 1;
-            }
-        }
-        playerState.restingTemp += (torches * 3);
-        playerState.restingTemp += (fires * 3);
-        playerState.restingTemp += (lava * 8);
-        playerState.restingTemp += (campfires * 15);
-
-        AtomicInteger ice = new AtomicInteger();
-        AtomicInteger packed_ice = new AtomicInteger();
-        AtomicInteger blue_ice = new AtomicInteger();
-        Stream<BlockState> coldBox = player.getWorld().getStatesInBox(Box.of(pos, 2, 3, 2));
-        coldBox.forEach((state) -> {
-            if (Objects.equals(state.getBlock().getName(), Blocks.ICE.getName())) {
-                ice.addAndGet(1);
-            } else if (Objects.equals(state.getBlock().getName(), Blocks.PACKED_ICE.getName())) {
-                packed_ice.addAndGet(1);
-            } else if (Objects.equals(state.getBlock().getName(), Blocks.BLUE_ICE.getName())) {
-                blue_ice.addAndGet(1);
-            } else if (Objects.equals(state.getBlock().getName(), ThermBlocks.ICE_BOX_FROZEN_BLOCK.getName())) {
-                packed_ice.addAndGet(1);
-            }
+        Stream<BlockState> heatBlockBox = player.getWorld().getStatesInBox(Box.of(pos, 4, 4, 4));
+        heatBlockBox.forEach((state) -> {
+            ThermMod.config.heatingBlocks.forEach((b, t) -> {
+                if (Objects.equals(state.getBlock().toString(), b)) {
+                    playerState.restingTemp += t;
+                }
+            });
         });
-        playerState.restingTemp -= (ice.get() * 1);
-        playerState.restingTemp -= (packed_ice.get() * 3);
-        playerState.restingTemp -= (blue_ice.get() * 6);
+        Stream<BlockState> coldBlockBox = player.getWorld().getStatesInBox(Box.of(pos, 2, 3, 2));
+        coldBlockBox.forEach((state) -> {
+            ThermMod.config.coolingBlocks.forEach((b, t) -> {
+                if (Objects.equals(state.getBlock().toString(), b)) {
+                    playerState.restingTemp -= t;
+                }
+            });
+        });
 
         if (playerState.searchFireplaceTick <= 0) {
             playerState.searchFireplaceTick = 4;
@@ -212,10 +189,10 @@ public class PlayerTempTickC2SPacket {
         short tempDir = 16;
 
         if (Math.round(playerState.restingTemp) > Math.round(playerState.temp)) { //TODO fix temprate
-            playerState.temp += 0.125;
+            playerState.temp += 0.25;
             tempDir = 1;
         } else if (Math.round(playerState.restingTemp) < Math.round(playerState.temp)) {
-            playerState.temp -= 0.125;
+            playerState.temp -= 0.25;
             tempDir = -1;
         } else if (Math.round(playerState.restingTemp) == Math.round(playerState.temp)) {tempDir = 0;}
 
