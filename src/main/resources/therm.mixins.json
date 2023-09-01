@@ -2,6 +2,9 @@
 	"required": true,
 	"package": "thermite.therm.mixin",
 	"compatibilityLevel": "JAVA_17",
+	"client": [
+		"InGameHudMixin"
+	],
 	"mixins": [
 		"ExampleMixin"
 	],

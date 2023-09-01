@@ -23,6 +23,11 @@ public class ThermClient implements ClientModInitializer {
     public static boolean showGui = true;
     private static KeyBinding showGuiKey;
 
+    public static int glassShakeTick = 0;
+    public static int glassShakeTickMax = 0;
+    public static int glassShakePM = -1;
+    public static boolean glassShakeAxis = false;
+
     @Override
     public void onInitializeClient() {
 
@@ -42,11 +47,18 @@ public class ThermClient implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register((client) -> {
             if (client.world != null) {
                 if (client.world.isClient()) {
+
                     if (tempTickCounter < tempTickCount) {
                         tempTickCounter += 1;
                     } else if (tempTickCounter >= tempTickCount) {
+                        boolean paused = false;
+                        if (client.isInSingleplayer() && client.isPaused()) {
+                            paused = true;
+                        }
+                        if (!paused && !client.player.isCreative() && !client.player.isSpectator()) {
+                            ClientPlayNetworking.send(ThermNetworkingPackets.PLAYER_TEMP_TICK_C2S_PACKET_ID, PacketByteBufs.create());
+                        }
                         tempTickCounter = 0;
-                        ClientPlayNetworking.send(ThermNetworkingPackets.PLAYER_TEMP_TICK_C2S_PACKET_ID, PacketByteBufs.create());
                     }
                 }
             }
