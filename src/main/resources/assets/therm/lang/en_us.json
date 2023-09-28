@@ -6,6 +6,8 @@
   "block.therm.ice_box_empty": "Empty Ice Box",
   "block.therm.ice_box_freezing": "Freezing Ice Box",
   "block.therm.ice_box_frozen": "Frozen Ice Box",
-  "block.therm.fireplace": "Brick Fireplace"
+  "block.therm.fireplace": "Brick Fireplace",
+
+  "effect.therm.cooling": "Cooling"
 
 }

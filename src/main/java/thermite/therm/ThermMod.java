@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thermite.therm.block.ThermBlocks;
 import thermite.therm.block.entity.FireplaceBlockEntity;
+import thermite.therm.effect.ThermStatusEffects;
 import thermite.therm.item.GoldSweetBerriesItem;
 import thermite.therm.item.IceJuiceItem;
 import thermite.therm.item.ThermometerItem;
@@ -71,6 +72,9 @@ public class ThermMod implements ModInitializer {
 
 		config.load();
 		ConfigOptions.mod(modid).branch(new String[]{"branch", "config"});
+
+		//status effects
+		Registry.register(Registries.STATUS_EFFECT, new Identifier(modid, "cooling"), ThermStatusEffects.COOLING);
 
 		//items
 		Registry.register(Registries.ITEM, new Identifier(modid, "gold_sweet_berries"), GOLD_SWEET_BERRIES_ITEM);

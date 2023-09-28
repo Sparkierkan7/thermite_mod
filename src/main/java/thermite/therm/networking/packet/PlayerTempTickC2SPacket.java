@@ -21,6 +21,7 @@ import thermite.therm.ThermPlayerState;
 import thermite.therm.ThermUtil;
 import thermite.therm.block.FireplaceBlock;
 import thermite.therm.block.ThermBlocks;
+import thermite.therm.effect.ThermStatusEffects;
 import thermite.therm.networking.ThermNetworkingPackets;
 import thermite.therm.util.BlockStatePosPair;
 
@@ -187,6 +188,12 @@ public class PlayerTempTickC2SPacket {
             }
         }
         playerState.restingTemp -= (fireProt * ThermMod.config.fireProtectionCoolingMultiplier);
+
+        player.getStatusEffects().forEach((i) -> {
+            if (i.getTranslationKey() == ThermStatusEffects.COOLING.getTranslationKey()) {
+                playerState.restingTemp -= (10 + (10 * i.getAmplifier()));
+            }
+        });
 
         short tempDir = (short)(playerState.restingTemp - playerState.temp);
 

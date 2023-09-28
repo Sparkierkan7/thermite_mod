@@ -13,12 +13,12 @@ public class DrinkIceJuiceC2SPacket {
 
     public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
 
-        ServerState serverState = ServerState.getServerState(server);
+        /*ServerState serverState = ServerState.getServerState(server);
         ThermPlayerState playerState = ServerState.getPlayerState(player);
 
         playerState.temp -= 10;
         if (playerState.temp < 0) {playerState.temp = 0;}
-        serverState.markDirty();
+        serverState.markDirty();*/
 
     }
 

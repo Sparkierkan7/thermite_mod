@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " G ",
-    "GBG",
-    " G "
+    "BG ",
+    "GG ",
+    "   "
   ],
   "key": {
 
     "G": {
-      "item": "minecraft:gold_nugget"
+      "item": "minecraft:gold_ingot"
     },
     "B": {
       "item": "minecraft:sweet_berries"

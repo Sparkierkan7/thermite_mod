@@ -3,6 +3,8 @@ package thermite.therm.item;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,6 +15,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
+import thermite.therm.effect.ThermStatusEffects;
 import thermite.therm.networking.ThermNetworkingPackets;
 
 public class IceJuiceItem extends Item {
@@ -56,13 +59,12 @@ public class IceJuiceItem extends Item {
         playerEntity.playSound(SoundEvents.ENTITY_WANDERING_TRADER_DRINK_POTION, 1.0F, 1.0F);
         Hand hand = playerEntity.getActiveHand();
 
-        if (hand == Hand.MAIN_HAND && world.isClient) {
-
-            ClientPlayNetworking.send(ThermNetworkingPackets.DRINK_ICE_JUICE_C2S_PACKET_ID, PacketByteBufs.create());
-
-        } else if (hand == Hand.MAIN_HAND && !world.isClient) {
+        if (hand == Hand.MAIN_HAND && !world.isClient) {
             playerEntity.getStackInHand(hand).setCount(playerEntity.getStackInHand(hand).getCount() - 1);
             playerEntity.getInventory().insertStack(new ItemStack(Items.GLASS_BOTTLE));
+
+            playerEntity.addStatusEffect(new StatusEffectInstance(ThermStatusEffects.COOLING, 6000, 0, false, true));
+
         }
 
         return super.finishUsing(stack, world, user);
