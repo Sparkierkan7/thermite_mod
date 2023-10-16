@@ -15,6 +15,5 @@ public class ThermPlayerState {
     public int maxDamageTick = 10;
     public int searchFireplaceTick = 4;
     public int fireplaces = 0;
-    public int tempModifier = 0;
 
 }

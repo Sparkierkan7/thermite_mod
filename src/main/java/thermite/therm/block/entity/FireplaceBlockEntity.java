@@ -63,13 +63,14 @@ public class FireplaceBlockEntity extends BlockEntity {
     //tick
     public static void tick(World world, BlockPos pos, BlockState state, FireplaceBlockEntity be) {
 
-        if (be.time > 0) {be.time -= 1;}
-        //ThermMod.LOGGER.info("time:" + be.time);
-        if (be.time <= 0) {
-            world.setBlockState(pos, ThermBlocks.FIREPLACE_BLOCK.getDefaultState().with(FireplaceBlock.LIT, false).with(FireplaceBlock.FACING, state.get(FireplaceBlock.FACING)));
-            world.updateListeners(pos, state, state, Block.NOTIFY_LISTENERS);
+        if (world.getBlockState(pos).get(FireplaceBlock.LIT)) {
+            if (be.time > 0) {be.time -= 1;}
+            if (be.time <= 0) {
+                world.setBlockState(pos, ThermBlocks.FIREPLACE_BLOCK.getDefaultState().with(FireplaceBlock.LIT, false).with(FireplaceBlock.FACING, state.get(FireplaceBlock.FACING)));
+                world.updateListeners(pos, state, state, Block.NOTIFY_LISTENERS);
+            }
+            be.markDirty();
         }
-        be.markDirty();
 
     }
 

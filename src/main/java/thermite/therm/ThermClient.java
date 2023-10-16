@@ -34,7 +34,7 @@ public class ThermClient implements ClientModInitializer {
         showGuiKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "Toggle Temperature Gui",
                 InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_X,
+                GLFW.GLFW_KEY_UNKNOWN,
                 "Thermite"
         ));
 

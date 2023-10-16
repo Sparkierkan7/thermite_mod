@@ -15,6 +15,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
+import thermite.therm.ThermMod;
 import thermite.therm.effect.ThermStatusEffects;
 import thermite.therm.networking.ThermNetworkingPackets;
 
@@ -63,7 +64,7 @@ public class IceJuiceItem extends Item {
             playerEntity.getStackInHand(hand).setCount(playerEntity.getStackInHand(hand).getCount() - 1);
             playerEntity.getInventory().insertStack(new ItemStack(Items.GLASS_BOTTLE));
 
-            playerEntity.addStatusEffect(new StatusEffectInstance(ThermStatusEffects.COOLING, 6000, 0, false, true));
+            playerEntity.addStatusEffect(new StatusEffectInstance(ThermStatusEffects.COOLING, ThermMod.config.iceJuiceEffectDuration, 0, false, true));
 
         }
 

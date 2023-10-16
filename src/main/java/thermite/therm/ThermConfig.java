@@ -87,7 +87,7 @@ public class ThermConfig extends Config {
     public Map<String, Integer> heldTempItems = new HashMap(Map.of("torch", 3, "lava_bucket", 3));
 
     @ConfigEntry(comment = "Blocks that will heat you up when near.")
-    public Map<String, Integer> heatingBlocks = new HashMap(Map.of("Block{minecraft:torch}", 3, "Block{minecraft:fire}", 3, "Block{minecraft:lava}", 8, "Block{minecraft:campfire}", 15, "Block{minecraft:wall_torch}", 3));
+    public Map<String, Integer> heatingBlocks = new HashMap(Map.of("Block{minecraft:torch}", 3, "Block{minecraft:fire}", 3, "Block{minecraft:lava}", 8, "Block{minecraft:campfire}", 15, "Block{minecraft:wall_torch}", 3, "Block{minecraft:soul_torch}", 3, "Block{minecraft:soul_wall_torch}", 3, "Block{minecraft:soul_campfire}", 15));
 
     @ConfigEntry(comment = "Blocks that will cool you down when near.")
     public Map<String, Integer> coolingBlocks = new HashMap(Map.of("Block{minecraft:ice}", 1, "Block{minecraft:packed_ice}", 3, "Block{minecraft:blue_ice}", 6));
@@ -125,7 +125,8 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "Damage interval for extreme hypothermia and hyperthermia in seconds (Default: 2)")
     public int extremetemperatureDamageInterval = 2;
 
-    //TODO enableCustomVignette option
+    @ConfigEntry(comment = "Duration of the cooling effect of ice juice in ticks. (Default: 6000)")
+    public int iceJuiceEffectDuration = 6000;
 
     public ThermConfig() {
         super(ConfigOptions.mod(ThermMod.modid));
