@@ -3,13 +3,11 @@ package thermite.therm.mixin;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.border.WorldBorder;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -18,9 +16,11 @@ import thermite.therm.ThermMod;
 import thermite.therm.client.TemperatureHudOverlay;
 
 @Mixin(InGameHud.class)
-public class InGameHudMixin {
+public abstract class InGameHudMixin {
+    @Shadow protected abstract void renderOverlay(Identifier texture, float opacity);
+
     @Inject(method = "renderVignetteOverlay", at = @At(value = "HEAD"), cancellable = true)
-    private void temperatureOverlay(DrawContext context, Entity entity, CallbackInfo cir) {
+    private void temperatureOverlay(Entity entity, CallbackInfo cir) {
 
         if (ThermMod.config.enableTemperatureVignette) {
             MinecraftClient client = MinecraftClient.getInstance();
@@ -68,15 +68,15 @@ public class InGameHudMixin {
                 RenderSystem.disableDepthTest();
                 RenderSystem.depthMask(false);
                 RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-                context.setShaderColor(r, g, b, a);
+                RenderSystem.setShaderColor(r, g, b, a);
                 if (!extreme) {
-                    context.drawTexture(TemperatureHudOverlay.TEMPERATURE_EXTREME_OVERLAY, 0, 0, -90, 0.0f, 0.0f, context.getScaledWindowWidth(), context.getScaledWindowHeight(), context.getScaledWindowWidth(), context.getScaledWindowHeight());
+                    renderOverlay(TemperatureHudOverlay.TEMPERATURE_EXTREME_OVERLAY, 0);
                 } else {
-                    context.drawTexture(TemperatureHudOverlay.TEMPERATURE_EXTREME_OVERLAY2, 0, 0, -90, 0.0f, 0.0f, context.getScaledWindowWidth(), context.getScaledWindowHeight(), context.getScaledWindowWidth(), context.getScaledWindowHeight());
+                    renderOverlay(TemperatureHudOverlay.TEMPERATURE_EXTREME_OVERLAY2, 0);
                 }
                 RenderSystem.depthMask(true);
                 RenderSystem.enableDepthTest();
-                context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
                 RenderSystem.defaultBlendFunc();
             }
         }

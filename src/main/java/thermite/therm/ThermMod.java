@@ -1,30 +1,21 @@
 package thermite.therm;
 
-import me.lortseam.completeconfig.data.ConfigOptions;
+import me.lortseam.completeconfig.api.ConfigContainer;
+import me.lortseam.completeconfig.data.ConfigRegistry;
 import net.fabricmc.api.ModInitializer;
-
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.registry.Registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import thermite.therm.block.ThermBlocks;
@@ -46,68 +37,54 @@ public class ThermMod implements ModInitializer {
 	public static final String modVersion = "3.2.0";
 
 	//items
-	public static final GoldSweetBerriesItem GOLD_SWEET_BERRIES_ITEM = new GoldSweetBerriesItem(new FabricItemSettings().maxCount(64));
-	public static final IceJuiceItem ICE_JUICE_ITEM = new IceJuiceItem(new FabricItemSettings().maxCount(16));
-	public static final ThermometerItem THERMOMETER_ITEM = new ThermometerItem(new FabricItemSettings().maxCount(1));
+	public static final GoldSweetBerriesItem GOLD_SWEET_BERRIES_ITEM = new GoldSweetBerriesItem(new FabricItemSettings().maxCount(64).group(ItemGroup.FOOD));
+	public static final IceJuiceItem ICE_JUICE_ITEM = new IceJuiceItem(new FabricItemSettings().maxCount(16).group(ItemGroup.FOOD));
+	public static final ThermometerItem THERMOMETER_ITEM = new ThermometerItem(new FabricItemSettings().maxCount(1).group(ItemGroup.TOOLS));
 
 	//block items
-	public static final BlockItem ICE_BOX_EMPTY_ITEM = new BlockItem(ThermBlocks.ICE_BOX_EMPTY_BLOCK, new FabricItemSettings());
+	public static final BlockItem ICE_BOX_EMPTY_ITEM = new BlockItem(ThermBlocks.ICE_BOX_EMPTY_BLOCK, new FabricItemSettings().group(ItemGroup.DECORATIONS));
 	public static final BlockItem ICE_BOX_FREEZING_ITEM = new BlockItem(ThermBlocks.ICE_BOX_FREEZING_BLOCK, new FabricItemSettings());
 	public static final BlockItem ICE_BOX_FROZEN_ITEM = new BlockItem(ThermBlocks.ICE_BOX_FROZEN_BLOCK, new FabricItemSettings());
-	public static final BlockItem FIREPLACE_ITEM = new BlockItem(ThermBlocks.FIREPLACE_BLOCK, new FabricItemSettings());
+	public static final BlockItem FIREPLACE_ITEM = new BlockItem(ThermBlocks.FIREPLACE_BLOCK, new FabricItemSettings().group(ItemGroup.DECORATIONS));
 
 	//block entities
 	//public static final BlockEntityType<FireplaceBlockEntity> FIREPLACE_BLOCK_ENTITY = null;
 	public static final BlockEntityType<FireplaceBlockEntity> FIREPLACE_BLOCK_ENTITY = Registry.register(
-			Registries.BLOCK_ENTITY_TYPE,
+			Registry.BLOCK_ENTITY_TYPE,
 			new Identifier(modid, "fireplace_block_entity"),
 			FabricBlockEntityTypeBuilder.create(FireplaceBlockEntity::new, ThermBlocks.FIREPLACE_BLOCK).build()
 	);
 
 	//config
-	public static final ThermConfig config = new ThermConfig();
+	public static final ThermConfig config = new ThermConfig(modid);
 
 	@Override
 	public void onInitialize() {
 
 		config.load();
-		ConfigOptions.mod(modid).branch(new String[]{"branch", "config"});
 
 		//status effects
-		Registry.register(Registries.STATUS_EFFECT, new Identifier(modid, "cooling"), ThermStatusEffects.COOLING);
+		Registry.register(Registry.STATUS_EFFECT, new Identifier(modid, "cooling"), ThermStatusEffects.COOLING);
 
 		//items
-		Registry.register(Registries.ITEM, new Identifier(modid, "gold_sweet_berries"), GOLD_SWEET_BERRIES_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modid, "ice_juice"), ICE_JUICE_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modid, "thermometer"), THERMOMETER_ITEM);
+		Registry.register(Registry.ITEM, new Identifier(modid, "gold_sweet_berries"), GOLD_SWEET_BERRIES_ITEM);
+		Registry.register(Registry.ITEM, new Identifier(modid, "ice_juice"), ICE_JUICE_ITEM);
+		Registry.register(Registry.ITEM, new Identifier(modid, "thermometer"), THERMOMETER_ITEM);
 
 		//blocks
-		Registry.register(Registries.BLOCK, new Identifier(modid, "ice_box_empty"), ThermBlocks.ICE_BOX_EMPTY_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modid, "ice_box_freezing"), ThermBlocks.ICE_BOX_FREEZING_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modid, "ice_box_frozen"), ThermBlocks.ICE_BOX_FROZEN_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modid, "fireplace"), ThermBlocks.FIREPLACE_BLOCK);
-		Registry.register(Registries.BLOCK, new Identifier(modid, "smoke"), ThermBlocks.SMOKE_BLOCK);
+		Registry.register(Registry.BLOCK, new Identifier(modid, "ice_box_empty"), ThermBlocks.ICE_BOX_EMPTY_BLOCK);
+		Registry.register(Registry.BLOCK, new Identifier(modid, "ice_box_freezing"), ThermBlocks.ICE_BOX_FREEZING_BLOCK);
+		Registry.register(Registry.BLOCK, new Identifier(modid, "ice_box_frozen"), ThermBlocks.ICE_BOX_FROZEN_BLOCK);
+		Registry.register(Registry.BLOCK, new Identifier(modid, "fireplace"), ThermBlocks.FIREPLACE_BLOCK);
+		Registry.register(Registry.BLOCK, new Identifier(modid, "smoke"), ThermBlocks.SMOKE_BLOCK);
 
 		//block item registry
-		Registry.register(Registries.ITEM, new Identifier(modid, "ice_box_empty_item"), ICE_BOX_EMPTY_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modid, "ice_box_freezing_item"), ICE_BOX_FREEZING_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modid, "ice_box_frozen_item"), ICE_BOX_FROZEN_ITEM);
-		Registry.register(Registries.ITEM, new Identifier(modid, "fireplace_item"), FIREPLACE_ITEM);
+		Registry.register(Registry.ITEM, new Identifier(modid, "ice_box_empty_item"), ICE_BOX_EMPTY_ITEM);
+		Registry.register(Registry.ITEM, new Identifier(modid, "ice_box_freezing_item"), ICE_BOX_FREEZING_ITEM);
+		Registry.register(Registry.ITEM, new Identifier(modid, "ice_box_frozen_item"), ICE_BOX_FROZEN_ITEM);
+		Registry.register(Registry.ITEM, new Identifier(modid, "fireplace_item"), FIREPLACE_ITEM);
 
 		//item groups
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK).register(content -> {
-			content.add(GOLD_SWEET_BERRIES_ITEM);
-			content.add(ICE_JUICE_ITEM);
-		});
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> {
-			content.add(THERMOMETER_ITEM);
-		});
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(content -> {
-			content.add(ICE_BOX_EMPTY_ITEM);
-		});
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(content -> {
-			content.add(FIREPLACE_ITEM);
-		});
 
 
 		ThermNetworkingPackets.registerC2SPackets();
@@ -117,10 +94,6 @@ public class ThermMod implements ModInitializer {
 
 			ServerState serverState = ServerState.getServerState(handler.player.getWorld().getServer());
 			ThermPlayerState playerState = ServerState.getPlayerState(handler.player);
-
-			if (!Objects.equals(serverState.worldVersion, modVersion)) {
-
-			}
 
 		});
 
@@ -210,7 +183,7 @@ public class ThermMod implements ModInitializer {
 
 		//commands
 		//thermite_resetPlayerState command
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("thermite_resetPlayerState").requires(source -> source.hasPermissionLevel(4))
+		CommandRegistrationCallback.EVENT.register((dispatcher, xyu) -> dispatcher.register(literal("thermite_resetPlayerState").requires(source -> source.hasPermissionLevel(4))
 				.then(argument("player", EntityArgumentType.player())
 						.executes(context -> {
 
@@ -228,7 +201,7 @@ public class ThermMod implements ModInitializer {
 							playerState.searchFireplaceTick = 4;
 							serverState.markDirty();
 
-							context.getSource().sendMessage(Text.literal("Reset " + EntityArgumentType.getPlayer(context, "player").getName().getString() + "'s playerState."));
+							context.getSource().sendFeedback(new LiteralText("Reset " + EntityArgumentType.getPlayer(context, "player").getName().getString() + "'s playerState."), false);
 
 							return 1;
 						}))));
