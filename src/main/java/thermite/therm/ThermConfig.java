@@ -1,15 +1,15 @@
 package thermite.therm;
 
+import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.Config;
-import me.lortseam.completeconfig.data.ConfigOptions;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ThermConfig extends Config {
+public class ThermConfig extends Config implements ConfigContainer {
 
     //seasons
     @ConfigEntry(comment = "(Experimental) A small built in season system that affects your temperature depending on the season. You can configure the length of each season in half seconds, (one minecraft day = 2400 half seconds).")
@@ -128,8 +128,7 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "Duration of the cooling effect of ice juice in ticks. (Default: 6000)")
     public int iceJuiceEffectDuration = 6000;
 
-    public ThermConfig() {
-        super(ConfigOptions.mod(ThermMod.modid));
+    public ThermConfig(String modId) {
+        super(modId);
     }
-
 }

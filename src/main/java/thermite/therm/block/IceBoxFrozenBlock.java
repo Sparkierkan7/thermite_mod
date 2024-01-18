@@ -2,7 +2,6 @@ package thermite.therm.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -11,12 +10,11 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import thermite.therm.ThermMod;
 import thermite.therm.ThermUtil;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class IceBoxFrozenBlock extends Block {
 
@@ -35,21 +33,23 @@ public class IceBoxFrozenBlock extends Block {
 
         return ActionResult.SUCCESS;
     }
-
+    @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         float temp = 23;
         String climate = "err";
-        if (!world.isClient) {
-            temp = world.getBiome(pos).value().getTemperature();
-            climate = ThermUtil.getClimate(temp);
-            if (Objects.equals(climate, "temperate") || Objects.equals(climate, "hot")) {
-                if (random.nextInt(7) == 0) {
-                    world.setBlockState(pos, ThermBlocks.ICE_BOX_FREEZING_BLOCK.getDefaultState());
-                }
-            } else if (Objects.equals(climate, "arid")) {
-                if (random.nextInt(5) == 0) {
-                    world.setBlockState(pos, ThermBlocks.ICE_BOX_FREEZING_BLOCK.getDefaultState());
-                }
+        if (world.isClient) {
+            super.randomTick(state, world, pos, random);
+            return;
+        }
+        temp = world.getBiome(pos).value().getTemperature();
+        climate = ThermUtil.getClimate(temp);
+        if (Objects.equals(climate, "temperate") || Objects.equals(climate, "hot")) {
+            if (random.nextInt(7) == 0) {
+                world.setBlockState(pos, ThermBlocks.ICE_BOX_FREEZING_BLOCK.getDefaultState());
+            }
+        } else if (Objects.equals(climate, "arid")) {
+            if (random.nextInt(5) == 0) {
+                world.setBlockState(pos, ThermBlocks.ICE_BOX_FREEZING_BLOCK.getDefaultState());
             }
         }
         super.randomTick(state, world, pos, random);

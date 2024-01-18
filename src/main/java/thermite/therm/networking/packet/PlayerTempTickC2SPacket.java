@@ -6,13 +6,13 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CampfireBlock;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.biome.Biome;
@@ -25,14 +25,10 @@ import thermite.therm.block.FireplaceBlock;
 import thermite.therm.block.ThermBlocks;
 import thermite.therm.effect.ThermStatusEffects;
 import thermite.therm.networking.ThermNetworkingPackets;
-import thermite.therm.util.BlockStatePosPair;
 
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
-
-import static thermite.therm.ThermMod.LOGGER;
 
 public class PlayerTempTickC2SPacket {
 
@@ -91,13 +87,13 @@ public class PlayerTempTickC2SPacket {
 
         DimensionType dim = player.getWorld().getDimension();
 
-        if (dim.natural()) {
+        if (dim.isNatural()) {
             if (!player.getWorld().isDay()) { //its nighttime in overworld so make colder
                 playerState.restingTemp += nightRTemp;
             }
         }
 
-        Biome.Precipitation precip = player.getWorld().getBiome(player.getBlockPos()).value().getPrecipitation(player.getBlockPos());
+        Biome.Precipitation precip = player.getWorld().getBiome(player.getBlockPos()).value().getPrecipitation();
 
         //detect if raining or snowing and adjust resting temp
         if (precip == Biome.Precipitation.RAIN) {
@@ -237,7 +233,7 @@ public class PlayerTempTickC2SPacket {
             }
             if (playerState.damageTick >= playerState.maxDamageTick) {
                 playerState.damageTick = 0;
-                player.damage(player.getWorld().getDamageSources().freeze(), ThermMod.config.hypothermiaDamage);
+                player.damage(DamageSource.FREEZE, ThermMod.config.hypothermiaDamage);
             }
         } else if (Objects.equals(playerState.damageType, "burn")) {
             if (ThermMod.config.temperatureDamageDecreasesSaturation) {player.getHungerManager().setSaturationLevel(0f);}
@@ -252,7 +248,7 @@ public class PlayerTempTickC2SPacket {
                 }
                 if (playerState.damageTick >= playerState.maxDamageTick) {
                     playerState.damageTick = 0;
-                    player.damage(player.getWorld().getDamageSources().onFire(), ThermMod.config.hyperthermiaDamage);
+                    player.damage(DamageSource.ON_FIRE, ThermMod.config.hyperthermiaDamage);
                     player.getHungerManager().setSaturationLevel(player.getHungerManager().getSaturationLevel() - 6);
                 }
             }

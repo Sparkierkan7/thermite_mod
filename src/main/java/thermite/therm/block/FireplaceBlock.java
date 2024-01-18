@@ -4,8 +4,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.particle.CampfireSmokeParticle;
-import net.minecraft.datafixer.fix.ChunkPalettedStorageFix;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -21,12 +19,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import thermite.therm.ThermMod;
 import thermite.therm.block.entity.FireplaceBlockEntity;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class FireplaceBlock extends BlockWithEntity implements BlockEntityProvider {
 
@@ -40,7 +38,7 @@ public class FireplaceBlock extends BlockWithEntity implements BlockEntityProvid
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return (BlockState)this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
+        return (BlockState)this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite());
     }
 
     @Override

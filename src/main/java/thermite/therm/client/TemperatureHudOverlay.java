@@ -4,9 +4,10 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameOverlayRenderer;
-import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import thermite.therm.ThermClient;
@@ -41,7 +42,10 @@ public class TemperatureHudOverlay implements HudRenderCallback {
     public static final Identifier TEMPERATURE_EXTREME_OVERLAY2 = new Identifier(ThermMod.modid, "textures/misc/temp_extreme_2.png");
 
     @Override
-    public void onHudRender(DrawContext drawContext, float tickDelta) {
+    public void onHudRender(MatrixStack matrix, float tickDelta) {
+
+        TextureManager drawContext = MinecraftClient.getInstance().getTextureManager();
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         if (ThermClient.showGui) {
             if (Objects.equals(ThermMod.config.temperatureDisplayType, "gauge")) {
                 int x = 0;
@@ -59,23 +63,35 @@ public class TemperatureHudOverlay implements HudRenderCallback {
                 float tempFract = ((ThermClient.clientStoredTemperature / 100f) * Math.round(40*pixelMultiplier));
                 if (((ThermClient.clientStoredTemperature / 100f) * Math.round(40*pixelMultiplier)) > 59.0f) { tempFract = ((97 / 100f) * Math.round(40*pixelMultiplier)); } else if ((ThermClient.clientStoredTemperature / 100f) < 0) { tempFract = 0f; }
 
-                drawContext.drawTexture(THERMOMETER_GAUGE, x - ((44 + 149) - Math.round(2*pixelMultiplier)), y - (Math.round(8 * pixelMultiplier) + Math.round(3*pixelMultiplier) + 1),  0, 0, Math.round(40*pixelMultiplier), Math.round(9*pixelMultiplier), Math.round(40*pixelMultiplier), Math.round(9*pixelMultiplier));
-                drawContext.drawTexture(THERMOMETER_HAND, x - (int)( ((44 + 149) - Math.round(2*pixelMultiplier)) - tempFract ), y - (Math.round(8 * pixelMultiplier) + Math.round(3*pixelMultiplier) + 1),  0, 0, Math.round(1), Math.round(9*pixelMultiplier), Math.round(1), Math.round(9*pixelMultiplier));
+
+
+                RenderSystem.setShaderTexture(0, THERMOMETER_GAUGE);
+                DrawableHelper.drawTexture(matrix, x - ((44 + 149) - Math.round(2*pixelMultiplier)), y - (Math.round(8 * pixelMultiplier) + Math.round(3*pixelMultiplier) + 1),  0, 0, Math.round(40*pixelMultiplier), Math.round(9*pixelMultiplier), Math.round(40*pixelMultiplier), Math.round(9*pixelMultiplier));
+
+                RenderSystem.setShaderTexture(0,THERMOMETER_HAND);
+                DrawableHelper.drawTexture(matrix, x - (int)( ((44 + 149) - Math.round(2*pixelMultiplier)) - tempFract ), y - (Math.round(8 * pixelMultiplier) + Math.round(3*pixelMultiplier) + 1),  0, 0, Math.round(1), Math.round(9*pixelMultiplier), Math.round(1), Math.round(9*pixelMultiplier));
+
                 int frameY = y - (Math.round(13 * pixelMultiplier) + 1);
-                drawContext.drawTexture(THERMOMETER_FRAME, x - (44 + 149), frameY,  0, 0, Math.round(44*pixelMultiplier), Math.round(13*pixelMultiplier), Math.round(44*pixelMultiplier), Math.round(13*pixelMultiplier));
+
+                RenderSystem.setShaderTexture(0,THERMOMETER_FRAME);
+                DrawableHelper.drawTexture(matrix, x - (44 + 149), frameY,  0, 0, Math.round(44*pixelMultiplier), Math.round(13*pixelMultiplier), Math.round(44*pixelMultiplier), Math.round(13*pixelMultiplier));
 
                 if (ThermClient.clientStoredTempDir > 0) {
-                    drawContext.drawTexture(THERMOMETER_FLAME, x - (17 + 149), y - (Math.round(22 * pixelMultiplier)),  0, 0, Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier));
+                    RenderSystem.setShaderTexture(0,THERMOMETER_FLAME);
+                    DrawableHelper.drawTexture(matrix, x - (17 + 149), y - (Math.round(22 * pixelMultiplier)),  0, 0, Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier));
                 } else if (ThermClient.clientStoredTempDir < 0) {
-                    drawContext.drawTexture(THERMOMETER_SNOWFLAKE, x - (17 + 149), y - (Math.round(22 * pixelMultiplier)),  0, 0, Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier));
+                    RenderSystem.setShaderTexture(0,THERMOMETER_SNOWFLAKE);
+                    DrawableHelper.drawTexture(matrix, x - (17 + 149), y - (Math.round(22 * pixelMultiplier)),  0, 0, Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier));
                 } else {
-                    drawContext.drawTexture(THERMOMETER_STILL, x - (17 + 149), y - (Math.round(22 * pixelMultiplier)),  0, 0, Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier));
+                    RenderSystem.setShaderTexture(0,THERMOMETER_STILL);
+                    DrawableHelper.drawTexture(matrix, x - (17 + 149), y - (Math.round(22 * pixelMultiplier)),  0, 0, Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier), Math.round(8*pixelMultiplier));
                 }
 
                 if (offHand.getItem() == ThermMod.THERMOMETER_ITEM) {
-                    drawContext.drawTexture(THERMOMETER_DISPLAY, (x - (x - 16)) + ThermMod.config.thermometerXPos, frameY + ThermMod.config.thermometerYPos,0, 0, Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier), Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier));
+                    RenderSystem.setShaderTexture(0,THERMOMETER_DISPLAY);
+                    DrawableHelper.drawTexture(matrix, (x - (x - 16)) + ThermMod.config.thermometerXPos, frameY + ThermMod.config.thermometerYPos,0, 0, Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier), Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier));
                     assert client != null;
-                    drawContext.drawText(client.textRenderer, "§7" + ThermClient.clientStoredTemperature, ((x - (x - 16)) + 6) + ThermMod.config.thermometerXPos, (frameY + 7) + ThermMod.config.thermometerYPos,16777215, true);
+                    textRenderer.draw(matrix, "§7" + ThermClient.clientStoredTemperature, ((x - (x - 16)) + 6) + ThermMod.config.thermometerXPos, (frameY + 7) + ThermMod.config.thermometerYPos,16777215);
                 }
             } else if (Objects.equals(ThermMod.config.temperatureDisplayType, "glass_thermometer")) {
 
@@ -140,33 +156,43 @@ public class TemperatureHudOverlay implements HudRenderCallback {
                     }
 
                     if (temp < ThermMod.config.burnThreshold1 - 10 && temp > ThermMod.config.freezeThreshold1 + 10) {
-                        drawContext.drawTexture(TEMPERATE_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
+                        RenderSystem.setShaderTexture(0,TEMPERATE_GLASS);
+                        DrawableHelper.drawTexture(matrix, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
                     } else if (temp < ThermMod.config.freezeThreshold1 + 11 && temp > ThermMod.config.freezeThreshold1 + 5) {
-                        drawContext.drawTexture(COLD_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
+                        RenderSystem.setShaderTexture(0,COLD_GLASS);
+                        DrawableHelper.drawTexture(matrix, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
                     } else if (temp < ThermMod.config.freezeThreshold1 + 6) {
-                        drawContext.drawTexture(FROZEN_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
+                        RenderSystem.setShaderTexture(0,FROZEN_GLASS);
+                        DrawableHelper.drawTexture(matrix, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
                     } else if (temp > ThermMod.config.burnThreshold1 - 11 && temp < ThermMod.config.burnThreshold1 - 5) {
-                        drawContext.drawTexture(HOT_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
+                        RenderSystem.setShaderTexture(0,HOT_GLASS);
+                        DrawableHelper.drawTexture(matrix, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
                     } else if (temp > ThermMod.config.burnThreshold1 - 6) {
-                        drawContext.drawTexture(BLAZING_GLASS, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
+                        RenderSystem.setShaderTexture(0,BLAZING_GLASS);
+                        DrawableHelper.drawTexture(matrix, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
                     }
 
                     if (ThermClient.clientStoredTempDir < 0 && ThermClient.clientStoredTempDir > -10) {
-                        drawContext.drawTexture(COOLING_OUTLINE_SMALL, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
+                        RenderSystem.setShaderTexture(0,COOLING_OUTLINE_SMALL);
+                        DrawableHelper.drawTexture(matrix, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
                     } else if (ThermClient.clientStoredTempDir < -9) {
-                        drawContext.drawTexture(COOLING_OUTLINE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
+                        RenderSystem.setShaderTexture(0,COOLING_OUTLINE);
+                        DrawableHelper.drawTexture(matrix, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
                     } else if (ThermClient.clientStoredTempDir > 0 && ThermClient.clientStoredTempDir < 10) {
-                        drawContext.drawTexture(HEATING_OUTLINE_SMALL, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
+                        RenderSystem.setShaderTexture(0,HEATING_OUTLINE_SMALL);
+                        DrawableHelper.drawTexture(matrix, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
                     } else if (ThermClient.clientStoredTempDir > 9) {
-                        drawContext.drawTexture(HEATING_OUTLINE, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
+                        RenderSystem.setShaderTexture(0,HEATING_OUTLINE);
+                        DrawableHelper.drawTexture(matrix, x - (8), y - (10), 0, 0, 16, 21, 16, 21);
                     }
 
                 }
 
                 if (offHand.isOf(ThermMod.THERMOMETER_ITEM)) {
-                    drawContext.drawTexture(THERMOMETER_DISPLAY, (tx - (tx - 16)) + ThermMod.config.thermometerXPos, tFrameY + ThermMod.config.thermometerYPos,0, 0, Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier), Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier));
+                    RenderSystem.setShaderTexture(0,THERMOMETER_DISPLAY);
+                    DrawableHelper.drawTexture(matrix, (tx - (tx - 16)) + ThermMod.config.thermometerXPos, tFrameY + ThermMod.config.thermometerYPos,0, 0, Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier), Math.round(16*pixelMultiplier), Math.round(13*pixelMultiplier));
                     assert client != null;
-                    drawContext.drawText(client.textRenderer, "§7" + ThermClient.clientStoredTemperature, ((tx - (tx - 16)) + 6) + ThermMod.config.thermometerXPos, (tFrameY + 7) + ThermMod.config.thermometerYPos,16777215, true);
+                    textRenderer.draw(matrix, "§7" + ThermClient.clientStoredTemperature, ((tx - (tx - 16)) + 6) + ThermMod.config.thermometerXPos, (tFrameY + 7) + ThermMod.config.thermometerYPos,16777215);
                 }
 
             }
@@ -174,14 +200,15 @@ public class TemperatureHudOverlay implements HudRenderCallback {
         }
     }
 
-    private void renderOverlay(DrawContext context, Identifier texture, float opacity, int width, int height, float r, float g, float b) {
+    private void renderOverlay(MatrixStack matrix, Identifier texture, float opacity, int width, int height, float r, float g, float b) {
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
-        context.setShaderColor(r, g, b, opacity);
-        context.drawTexture(texture, 0, 0, -90, 0.0f, 0.0f, width, height, width, height);
+        RenderSystem.setShaderColor(r, g, b, opacity);
+        RenderSystem.setShaderTexture(0,texture);
+        DrawableHelper.drawTexture(matrix, 0, 0, -90, 0.0f, 0.0f, width, height, width, height);
         RenderSystem.depthMask(false);
         RenderSystem.enableDepthTest();
-        context.setShaderColor(1.0f, 1.0f, 1.0f, opacity);
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, opacity);
     }
 }
