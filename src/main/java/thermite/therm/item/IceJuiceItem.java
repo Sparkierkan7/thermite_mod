@@ -60,12 +60,11 @@ public class IceJuiceItem extends Item {
         playerEntity.playSound(SoundEvents.ENTITY_WANDERING_TRADER_DRINK_POTION, 1.0F, 1.0F);
         Hand hand = playerEntity.getActiveHand();
 
-        if (hand == Hand.MAIN_HAND && !world.isClient) {
+        if (!world.isClient()) {
             playerEntity.getStackInHand(hand).setCount(playerEntity.getStackInHand(hand).getCount() - 1);
             playerEntity.getInventory().insertStack(new ItemStack(Items.GLASS_BOTTLE));
 
             playerEntity.addStatusEffect(new StatusEffectInstance(ThermStatusEffects.COOLING, ThermMod.config.iceJuiceEffectDuration, 0, false, true));
-
         }
 
         return super.finishUsing(stack, world, user);

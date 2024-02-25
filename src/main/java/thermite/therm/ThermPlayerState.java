@@ -16,4 +16,8 @@ public class ThermPlayerState {
     public int searchFireplaceTick = 4;
     public int fireplaces = 0;
 
+    public double baseWindTemp = 0;
+    public double windTemp = 0;
+    public double windTurbulence = 23;
+
 }

@@ -12,12 +12,19 @@ import java.util.UUID;
 
 public class ServerState extends PersistentState {
 
-    String worldVersion = "3.2.0";
+    String worldVersion = "4.1.0.8";
     int testInt = 0;
     public int season = 0;
     public int seasonTick = 0;
     public long currentSeasonTick = 0;
     public int seasonalWeatherTick = 0;
+
+    public double windPitch = 360*Math.PI/180;
+    public double windYaw = 0;
+    public int windRandomizeTick = 0;
+    public double windTempModifierRange = 8;
+    public double windTempModifier = 0;
+    public double precipitationWindModifier = 0;
 
     public HashMap<UUID, ThermPlayerState> players = new HashMap<>();
 
@@ -38,6 +45,9 @@ public class ServerState extends PersistentState {
             playerStateNbt.putInt("damageTick", playerSate.damageTick);
             playerStateNbt.putInt("maxDamageTick", playerSate.maxDamageTick);
             playerStateNbt.putInt("searchFireplaceTick", playerSate.searchFireplaceTick);
+            playerStateNbt.putDouble("baseWindTemp", playerSate.baseWindTemp);
+            playerStateNbt.putDouble("windTemp", playerSate.windTemp);
+            playerStateNbt.putDouble("windTurbulence", playerSate.windTurbulence);
 
             playersNbtCompound.put(String.valueOf(UUID), playerStateNbt);
         });
@@ -49,6 +59,13 @@ public class ServerState extends PersistentState {
         nbt.putInt("seasonTick", seasonTick);
         nbt.putLong("currentSeasonTick", currentSeasonTick);
         nbt.putInt("seasonalWeatherTick", seasonalWeatherTick);
+        nbt.putDouble("windPitch", windPitch);
+        nbt.putDouble("windYaw", windYaw);
+        nbt.putInt("windRandomizeTick", windRandomizeTick);
+        nbt.putDouble("windTempModifierRange", windTempModifierRange);
+        nbt.putDouble("windTempModifier", windTempModifier);
+        nbt.putDouble("precipitationWindModifier", precipitationWindModifier);
+
         return nbt;
     }
 
@@ -70,6 +87,9 @@ public class ServerState extends PersistentState {
             playerState.damageTick = playersTag.getCompound(key).getInt("damageTick");
             playerState.maxDamageTick = playersTag.getCompound(key).getInt("maxDamageTick");
             playerState.searchFireplaceTick = playersTag.getCompound(key).getInt("searchFireplaceTick");
+            playerState.baseWindTemp = playersTag.getCompound(key).getDouble("baseWindTemp");
+            playerState.windTemp = playersTag.getCompound(key).getDouble("windTemp");
+            playerState.windTurbulence = playersTag.getCompound(key).getDouble("windTurbulence");
 
             UUID uuid = UUID.fromString(key);
             serverState.players.put(uuid, playerState);
@@ -81,6 +101,12 @@ public class ServerState extends PersistentState {
         serverState.seasonTick = tag.getInt("seasonTick");
         serverState.currentSeasonTick = tag.getLong("currentSeasonTick");
         serverState.seasonalWeatherTick = tag.getInt("seasonalWeatherTick");
+        serverState.windPitch = tag.getDouble("windPitch");
+        serverState.windYaw = tag.getDouble("windYaw");
+        serverState.windRandomizeTick = tag.getInt("windRandomizeTick");
+        serverState.windTempModifierRange = tag.getDouble("windTempModifierRange");
+        serverState.windTempModifier = tag.getDouble("windTempModifier");
+        serverState.precipitationWindModifier = tag.getDouble("precipitationWindModifier");
 
         return serverState;
     }

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WP ",
+    "WP ",
+    "   "
+  ],
+  "key": {
+    "W": {
+      "tag": "minecraft:wool"
+    },
+    "P": {
+      "item": "minecraft:wheat"
+    }
+  },
+  "result": {
+
+    "item": "therm:wool_cloth",
+    "count": 1
+
+  }
+}

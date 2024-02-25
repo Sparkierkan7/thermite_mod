@@ -29,10 +29,16 @@ public class ThermNetworkingPackets {
         ClientPlayNetworking.registerGlobalReceiver(SEND_THERMPLAYERSTATE_S2C_PACKET_ID, (client, handler, buf, responseSender) -> {
             double temperature = buf.readDouble();
             short td = buf.readShort();
+            double windPitch = buf.readDouble();
+            double windYaw = buf.readDouble();
+            double windTemp = buf.readDouble();
             client.execute(() -> {
 
                 ThermClient.clientStoredTemperature = Math.round(temperature);
                 ThermClient.clientStoredTempDir = td;
+                ThermClient.clientStoredWindPitch = windPitch;
+                ThermClient.clientStoredWindYaw = windYaw;
+                ThermClient.clientStoredWindTemp = windTemp;
 
             });
         });

@@ -12,9 +12,11 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.state.property.Properties;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import thermite.therm.ServerState;
@@ -25,14 +27,11 @@ import thermite.therm.block.FireplaceBlock;
 import thermite.therm.block.ThermBlocks;
 import thermite.therm.effect.ThermStatusEffects;
 import thermite.therm.networking.ThermNetworkingPackets;
-import thermite.therm.util.BlockStatePosPair;
 
-import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
-
-import static thermite.therm.ThermMod.LOGGER;
 
 public class PlayerTempTickC2SPacket {
 
@@ -47,7 +46,7 @@ public class PlayerTempTickC2SPacket {
 
         float temp = player.getWorld().getBiome(player.getBlockPos()).value().getTemperature();
         String climate = ThermUtil.getClimate(temp);
-        long time = (player.getWorld().getTimeOfDay()) - (0);
+        //long time = (player.getWorld().getTimeOfDay()) - (0);
 
         float nightRTemp = 0;
 
@@ -78,17 +77,6 @@ public class PlayerTempTickC2SPacket {
             nightRTemp = -15;
         }
 
-        if (ThermMod.config.enableSeasonSystem) {
-            int season = serverState.season;
-            if (season == 1) {
-                playerState.restingTemp += (8 * ThermMod.config.seasonTemperatureExtremenessMultiplier);
-            } else if (season == 2) {
-                playerState.restingTemp -= (8 * ThermMod.config.seasonTemperatureExtremenessMultiplier);
-            } else if (season == 3) {
-                playerState.restingTemp -= (12 * ThermMod.config.seasonTemperatureExtremenessMultiplier);
-            }
-        }
-
         DimensionType dim = player.getWorld().getDimension();
 
         if (dim.natural()) {
@@ -108,16 +96,50 @@ public class PlayerTempTickC2SPacket {
             }
         } else if (precip == Biome.Precipitation.SNOW) {
             if (player.getWorld().isRaining()) {
-                playerState.restingTemp -= 12;
+                playerState.restingTemp -= 8;
             }
         }
+
+        //armor items
+        AtomicInteger armorHeat = new AtomicInteger();
+        ThermMod.config.bootTempItems.forEach((it, t) -> {
+            if (Objects.equals(player.getInventory().getArmorStack(0).getItem().toString(), it)) {
+                playerState.restingTemp += t + player.getInventory().getArmorStack(0).getNbt().getInt("wool");
+                armorHeat.addAndGet(t + player.getInventory().getArmorStack(0).getNbt().getInt("wool"));
+            }
+        });
+        ThermMod.config.leggingTempItems.forEach((it, t) -> {
+            if (Objects.equals(player.getInventory().getArmorStack(1).getItem().toString(), it)) {
+                playerState.restingTemp += t + player.getInventory().getArmorStack(1).getNbt().getInt("wool");
+                armorHeat.addAndGet(t + player.getInventory().getArmorStack(1).getNbt().getInt("wool"));
+            }
+        });
+        ThermMod.config.chestplateTempItems.forEach((it, t) -> {
+            if (Objects.equals(player.getInventory().getArmorStack(2).getItem().toString(), it)) {
+                playerState.restingTemp += t + player.getInventory().getArmorStack(2).getNbt().getInt("wool");
+                armorHeat.addAndGet(t + player.getInventory().getArmorStack(2).getNbt().getInt("wool"));
+            }
+        });
+        ThermMod.config.helmetTempItems.forEach((it, t) -> {
+            if (Objects.equals(player.getInventory().getArmorStack(3).getItem().toString(), it)) {
+                playerState.restingTemp += t + player.getInventory().getArmorStack(3).getNbt().getInt("wool");
+                armorHeat.addAndGet(t + player.getInventory().getArmorStack(3).getNbt().getInt("wool"));
+            }
+        });
+        ThermMod.config.heldTempItems.forEach((it, t) -> {
+            if (Objects.equals(player.getInventory().getMainHandStack().getItem().toString(), it)) {
+                playerState.restingTemp += t;
+            }
+            if (Objects.equals(player.getInventory().offHand.get(0).getItem().toString(), it)) {
+                playerState.restingTemp += t;
+            }
+        });
 
         Vec3d pos = player.getPos();
         Stream<BlockState> heatBlockBox = player.getWorld().getStatesInBox(Box.of(pos, 4, 4, 4));
         heatBlockBox.forEach((state) -> {
             ThermMod.config.heatingBlocks.forEach((b, t) -> {
-                if (Objects.equals(state.getBlock().toString(), b)) {
-
+                if (Objects.equals(state.toString(), b)) {
                     if (state.isOf(Blocks.CAMPFIRE) || state.isOf(Blocks.SOUL_CAMPFIRE)) { //hard code to keep unlit campfires from heating.
                         if (state.get(CampfireBlock.LIT)) {
                             playerState.restingTemp += t;
@@ -125,19 +147,28 @@ public class PlayerTempTickC2SPacket {
                     } else {
                         playerState.restingTemp += t;
                     }
-
+                } else if (Objects.equals(state.getBlock().toString(), b) && !Objects.equals(state.toString(), state.getBlock().toString())) {
+                    playerState.restingTemp += t;
                 }
             });
+
         });
         Stream<BlockState> coldBlockBox = player.getWorld().getStatesInBox(Box.of(pos, 2, 3, 2));
         coldBlockBox.forEach((state) -> {
             ThermMod.config.coolingBlocks.forEach((b, t) -> {
-                if (Objects.equals(state.getBlock().toString(), b)) {
-                    playerState.restingTemp -= t;
+                if (Objects.equals(state.toString(), b)) {
+                    if (armorHeat.get() < 2) {
+                        playerState.restingTemp -= t;
+                    }
+                } else if (Objects.equals(state.getBlock().toString(), b) && !Objects.equals(state.toString(), state.getBlock().toString())) {
+                    if (armorHeat.get() < 2) {
+                        playerState.restingTemp -= t;
+                    }
                 }
             });
         });
 
+        //wind and fireplaces
         if (playerState.searchFireplaceTick <= 0) {
             playerState.searchFireplaceTick = 4;
             AtomicInteger fireplaces = new AtomicInteger();
@@ -150,43 +181,69 @@ public class PlayerTempTickC2SPacket {
                 }
             });
             playerState.fireplaces = fireplaces.get();
+
+
+            //wind
+            if (ThermMod.config.enableWind) {
+                if (ThermMod.config.multidimensionalWind || dim.natural()) {
+                    //wind base temperature calculation
+                    double calcWindTemp = serverState.windTempModifier;
+
+                    if (player.getPos().y > 62) {
+                        double heightAddition = (player.getPos().y-62);
+                        if (player.getPos().y <= 150) {
+                            heightAddition = heightAddition/7;
+                        } else {
+                            heightAddition = heightAddition/8;
+                        }
+                        calcWindTemp -= heightAddition;
+                        //ThermMod.LOGGER.info("heightAddition: " + heightAddition);
+                    }
+
+                    if (precip == Biome.Precipitation.RAIN) {
+                        if (player.getWorld().isRaining()) {
+                            calcWindTemp += serverState.precipitationWindModifier;
+                        } else if (player.getWorld().isThundering()) {
+                            calcWindTemp += serverState.precipitationWindModifier;
+                        }
+                    } else if (precip == Biome.Precipitation.SNOW) {
+                        if (player.getWorld().isRaining()) {
+                            calcWindTemp += serverState.precipitationWindModifier*1.3;
+                        }
+                    }
+
+                    playerState.baseWindTemp = calcWindTemp;
+                    if (playerState.baseWindTemp > 0) {
+                        playerState.baseWindTemp = 0;
+                    }
+
+                    //wind ray calculation
+                    Random rand = new Random();
+                    int unblockedRays = ThermMod.config.windRayCount;
+                    for (int i = 0; i < ThermMod.config.windRayCount; i++) {
+
+                        double turbulence = playerState.windTurbulence*Math.PI/180;
+
+                        Vec3d dir = new Vec3d((Math.cos(serverState.windPitch+rand.nextDouble(-turbulence, turbulence)) * Math.cos(serverState.windYaw+rand.nextDouble(-turbulence, turbulence))), (Math.sin(serverState.windPitch+rand.nextDouble(-turbulence, turbulence)) * Math.cos(serverState.windYaw+rand.nextDouble(-turbulence, turbulence))), Math.sin(serverState.windYaw+rand.nextDouble(-turbulence, turbulence)));
+
+                        Vec3d startPos = new Vec3d(player.getPos().x, player.getPos().y + 1, player.getPos().z);
+
+                        BlockHitResult r = player.getWorld().raycast(new RaycastContext(startPos, startPos.add(dir.multiply(ThermMod.config.windRayLength)), RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.WATER, player));
+                        if (!player.getWorld().getBlockState(r.getBlockPos()).isAir()) {
+                            unblockedRays -= 1;
+                        }
+                    }
+                    playerState.windTemp = playerState.baseWindTemp * ((double) unblockedRays /ThermMod.config.windRayCount);
+                }
+            }
         }
         playerState.restingTemp += (playerState.fireplaces * 14);
+        playerState.restingTemp += playerState.windTemp;
         playerState.searchFireplaceTick -= 1;
 
         if (player.isTouchingWater()) {
             playerState.restingTemp -= 10;
         }
-
-        //armor items
-        ThermMod.config.bootTempItems.forEach((it, t) -> {
-            if (Objects.equals(player.getInventory().getArmorStack(0).getItem().toString(), it)) {
-                playerState.restingTemp += t;
-            }
-        });
-        ThermMod.config.leggingTempItems.forEach((it, t) -> {
-            if (Objects.equals(player.getInventory().getArmorStack(1).getItem().toString(), it)) {
-                playerState.restingTemp += t;
-            }
-        });
-        ThermMod.config.chestplateTempItems.forEach((it, t) -> {
-            if (Objects.equals(player.getInventory().getArmorStack(2).getItem().toString(), it)) {
-                playerState.restingTemp += t;
-            }
-        });
-        ThermMod.config.helmetTempItems.forEach((it, t) -> {
-            if (Objects.equals(player.getInventory().getArmorStack(3).getItem().toString(), it)) {
-                playerState.restingTemp += t;
-            }
-        });
-        ThermMod.config.heldTempItems.forEach((it, t) -> {
-            if (Objects.equals(player.getInventory().getMainHandStack().getItem().toString(), it)) {
-                playerState.restingTemp += t;
-            }
-            if (Objects.equals(player.getInventory().offHand.get(0).getItem().toString(), it)) {
-                playerState.restingTemp += t;
-            }
-        });
 
         //fire protection
         int fireProt = 0;
@@ -240,20 +297,19 @@ public class PlayerTempTickC2SPacket {
                 player.damage(player.getWorld().getDamageSources().freeze(), ThermMod.config.hypothermiaDamage);
             }
         } else if (Objects.equals(playerState.damageType, "burn")) {
-            if (ThermMod.config.temperatureDamageDecreasesSaturation) {player.getHungerManager().setSaturationLevel(0f);}
             boolean res = false;
             try {
                 String fireRes = Objects.requireNonNull(player.getStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE).getEffectType())).getEffectType().getName().getString();
                 res = true;
             } catch (NullPointerException err) {res = false;}
             if (!res) {
+                if (ThermMod.config.temperatureDamageDecreasesSaturation) {player.getHungerManager().setSaturationLevel(0f);}
                 if (playerState.damageTick < playerState.maxDamageTick) {
                     playerState.damageTick += 1;
                 }
                 if (playerState.damageTick >= playerState.maxDamageTick) {
                     playerState.damageTick = 0;
                     player.damage(player.getWorld().getDamageSources().onFire(), ThermMod.config.hyperthermiaDamage);
-                    player.getHungerManager().setSaturationLevel(player.getHungerManager().getSaturationLevel() - 6);
                 }
             }
         }
@@ -266,6 +322,9 @@ public class PlayerTempTickC2SPacket {
         PacketByteBuf sendingdata = PacketByteBufs.create();
         sendingdata.writeDouble(playerState.temp);
         sendingdata.writeShort(tempDir);
+        sendingdata.writeDouble(serverState.windPitch);
+        sendingdata.writeDouble(serverState.windYaw);
+        sendingdata.writeDouble(playerState.windTemp);
         ServerPlayNetworking.send(player, ThermNetworkingPackets.SEND_THERMPLAYERSTATE_S2C_PACKET_ID, sendingdata);
 
         serverState.markDirty();

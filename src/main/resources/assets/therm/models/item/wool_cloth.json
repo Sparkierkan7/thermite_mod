@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "therm:item/wool_cloth_1"
+  }
+}

@@ -3,8 +3,6 @@ package thermite.therm;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.ConfigOptions;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,9 +59,12 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "When enabled, being cold enough causes a blue outline effect. And being hot enough causes an orange one. (Default: true)")
     public boolean enableTemperatureVignette = true;
 
+    @ConfigEntry(comment = "When enabled, particles will spawn showing the direction that the wind is flowing. More wind = more particles. (Default: true)")
+    public boolean enableWindParticles = true;
+
     //game
-    @ConfigEntry(comment = "Multiplier for how much each level of fire protection cools you (Default: 0.5)")
-    public float fireProtectionCoolingMultiplier = 0.5f;
+    @ConfigEntry(comment = "Multiplier for how much each level of fire protection cools you (Default: 1f)")
+    public float fireProtectionCoolingMultiplier = 1f;
 
     @ConfigEntry(comment = "Hyperthermia damage per 5 seconds. (Default: 1.0)")
     public float hyperthermiaDamage = 1.5f;
@@ -86,11 +87,40 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "Items that when held will change your temperature.")
     public Map<String, Integer> heldTempItems = new HashMap(Map.of("torch", 3, "lava_bucket", 3));
 
+    //public Map<String, Integer> heatingBlocks = new HashMap(Map.of("Block{minecraft:torch}", 3, "Block{minecraft:fire}", 3, "Block{minecraft:lava}", 8, "Block{minecraft:campfire}", 15, "Block{minecraft:wall_torch}", 3, "Block{minecraft:soul_torch}", 3, "Block{minecraft:soul_wall_torch}", 3, "Block{minecraft:soul_campfire}", 15, "Block{minecraft:lava_cauldron}", 8, "Block{minecraft:furnace}[facing=north,lit=true]", 3, "Block{minecraft:furnace}[facing=east,lit=true]", 3, "Block{minecraft:furnace}[facing=south,lit=true]", 3, "Block{minecraft:furnace}[facing=west,lit=true]", 3));
+
     @ConfigEntry(comment = "Blocks that will heat you up when near.")
-    public Map<String, Integer> heatingBlocks = new HashMap(Map.of("Block{minecraft:torch}", 3, "Block{minecraft:fire}", 3, "Block{minecraft:lava}", 8, "Block{minecraft:campfire}", 15, "Block{minecraft:wall_torch}", 3, "Block{minecraft:soul_torch}", 3, "Block{minecraft:soul_wall_torch}", 3, "Block{minecraft:soul_campfire}", 15));
+    public Map<String, Integer> heatingBlocks = new HashMap(Map.ofEntries(
+            Map.entry("Block{minecraft:fire}", 3),
+            Map.entry("Block{minecraft:lava}", 8),
+            Map.entry("Block{minecraft:campfire}", 15),
+            Map.entry("Block{minecraft:torch}", 3),
+            Map.entry("Block{minecraft:wall_torch}", 3),
+            Map.entry("Block{minecraft:soul_torch}", 3),
+            Map.entry("Block{minecraft:soul_wall_torch}", 3),
+            Map.entry("Block{minecraft:soul_campfire}", 15),
+            Map.entry("Block{minecraft:lava_cauldron}", 8),
+            Map.entry("Block{minecraft:furnace}[facing=north,lit=true]", 3),
+            Map.entry("Block{minecraft:furnace}[facing=east,lit=true]", 3),
+            Map.entry("Block{minecraft:furnace}[facing=south,lit=true]", 3),
+            Map.entry("Block{minecraft:furnace}[facing=west,lit=true]", 3),
+            Map.entry("Block{minecraft:blast_furnace}[facing=north,lit=true]", 3),
+            Map.entry("Block{minecraft:blast_furnace}[facing=east,lit=true]", 3),
+            Map.entry("Block{minecraft:blast_furnace}[facing=south,lit=true]", 3),
+            Map.entry("Block{minecraft:blast_furnace}[facing=west,lit=true]", 3),
+            Map.entry("Block{minecraft:smoker}[facing=north,lit=true]", 3),
+            Map.entry("Block{minecraft:smoker}[facing=east,lit=true]", 3),
+            Map.entry("Block{minecraft:smoker}[facing=south,lit=true]", 3),
+            Map.entry("Block{minecraft:smoker}[facing=west,lit=true]", 3)
+            ));
 
     @ConfigEntry(comment = "Blocks that will cool you down when near.")
-    public Map<String, Integer> coolingBlocks = new HashMap(Map.of("Block{minecraft:ice}", 1, "Block{minecraft:packed_ice}", 3, "Block{minecraft:blue_ice}", 6));
+    public Map<String, Integer> coolingBlocks = new HashMap(Map.ofEntries(
+            Map.entry("Block{minecraft:ice}", 1),
+            Map.entry("Block{minecraft:packed_ice}", 3),
+            Map.entry("Block{minecraft:blue_ice}", 6),
+            Map.entry("Block{minecraft:powder_snow}", 1)
+            ));
 
     @ConfigEntry(comment = "Base temperature for frigid climates. (Default: 25.0)")
     public double frigidClimateTemp = 25;
@@ -127,6 +157,18 @@ public class ThermConfig extends Config {
 
     @ConfigEntry(comment = "Duration of the cooling effect of ice juice in ticks. (Default: 6000)")
     public int iceJuiceEffectDuration = 6000;
+
+    @ConfigEntry(comment = "Disables or enables wind. (Default: true)")
+    public boolean enableWind = true;
+
+    @ConfigEntry(comment = "If disabled, wind will only be applied in the overworld. (Default: false)")
+    public boolean multidimensionalWind = false;
+
+    @ConfigEntry(comment = "Number of rays used in wind calculation. (Default: 10)")
+    public int windRayCount = 32;
+
+    @ConfigEntry(comment = "How many blocks long wind rays are. (Default: 32)")
+    public int windRayLength = 32;
 
     public ThermConfig() {
         super(ConfigOptions.mod(ThermMod.modid));
