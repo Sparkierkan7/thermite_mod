@@ -234,6 +234,8 @@ public class PlayerTempTickC2SPacket {
                         }
                     }
                     playerState.windTemp = playerState.baseWindTemp * ((double) unblockedRays /ThermMod.config.windRayCount);
+                } else if (!ThermMod.config.multidimensionalWind && !dim.natural()) {
+                    playerState.windTemp = 0;
                 }
             }
         }

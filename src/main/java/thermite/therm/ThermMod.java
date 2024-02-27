@@ -40,7 +40,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class ThermMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("therm");
 	public static final String modid = "therm";
-	public static final String modVersion = "5.0.0.1";
+	public static final String modVersion = "5.0.0.2";
 
 	//items
 	public static final GoldSweetBerriesItem GOLD_SWEET_BERRIES_ITEM = new GoldSweetBerriesItem(new FabricItemSettings().maxCount(64));
