@@ -92,26 +92,26 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "Blocks that will heat you up when near.")
     public Map<String, Integer> heatingBlocks = new HashMap(Map.ofEntries(
             Map.entry("Block{minecraft:fire}", 3),
-            Map.entry("Block{minecraft:lava}", 8),
+            Map.entry("Block{minecraft:lava}", 1),
             Map.entry("Block{minecraft:campfire}", 15),
-            Map.entry("Block{minecraft:torch}", 3),
-            Map.entry("Block{minecraft:wall_torch}", 3),
-            Map.entry("Block{minecraft:soul_torch}", 3),
+            Map.entry("Block{minecraft:torch}", 1),
+            Map.entry("Block{minecraft:wall_torch}", 1),
+            Map.entry("Block{minecraft:soul_torch}", 1),
             Map.entry("Block{minecraft:soul_wall_torch}", 3),
             Map.entry("Block{minecraft:soul_campfire}", 15),
-            Map.entry("Block{minecraft:lava_cauldron}", 8),
-            Map.entry("Block{minecraft:furnace}[facing=north,lit=true]", 3),
-            Map.entry("Block{minecraft:furnace}[facing=east,lit=true]", 3),
-            Map.entry("Block{minecraft:furnace}[facing=south,lit=true]", 3),
-            Map.entry("Block{minecraft:furnace}[facing=west,lit=true]", 3),
-            Map.entry("Block{minecraft:blast_furnace}[facing=north,lit=true]", 3),
-            Map.entry("Block{minecraft:blast_furnace}[facing=east,lit=true]", 3),
-            Map.entry("Block{minecraft:blast_furnace}[facing=south,lit=true]", 3),
-            Map.entry("Block{minecraft:blast_furnace}[facing=west,lit=true]", 3),
-            Map.entry("Block{minecraft:smoker}[facing=north,lit=true]", 3),
-            Map.entry("Block{minecraft:smoker}[facing=east,lit=true]", 3),
-            Map.entry("Block{minecraft:smoker}[facing=south,lit=true]", 3),
-            Map.entry("Block{minecraft:smoker}[facing=west,lit=true]", 3)
+            Map.entry("Block{minecraft:lava_cauldron}", 6),
+            Map.entry("Block{minecraft:furnace}[facing=north,lit=true]", 8),
+            Map.entry("Block{minecraft:furnace}[facing=east,lit=true]", 8),
+            Map.entry("Block{minecraft:furnace}[facing=south,lit=true]", 8),
+            Map.entry("Block{minecraft:furnace}[facing=west,lit=true]", 8),
+            Map.entry("Block{minecraft:blast_furnace}[facing=north,lit=true]", 8),
+            Map.entry("Block{minecraft:blast_furnace}[facing=east,lit=true]", 8),
+            Map.entry("Block{minecraft:blast_furnace}[facing=south,lit=true]", 8),
+            Map.entry("Block{minecraft:blast_furnace}[facing=west,lit=true]", 8),
+            Map.entry("Block{minecraft:smoker}[facing=north,lit=true]", 6),
+            Map.entry("Block{minecraft:smoker}[facing=east,lit=true]", 6),
+            Map.entry("Block{minecraft:smoker}[facing=south,lit=true]", 6),
+            Map.entry("Block{minecraft:smoker}[facing=west,lit=true]", 6)
             ));
 
     @ConfigEntry(comment = "Blocks that will cool you down when near.")
