@@ -35,6 +35,8 @@ import java.util.stream.Stream;
 
 public class PlayerTempTickC2SPacket {
 
+    //TODO why is this a packet
+
     public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
 
         ServerState serverState = ServerState.getServerState(server);
@@ -256,7 +258,7 @@ public class PlayerTempTickC2SPacket {
                 }
             }
         }
-        playerState.restingTemp -= (fireProt * ThermMod.config.fireProtectionCoolingMultiplier);
+        //playerState.restingTemp -= (fireProt * ThermMod.config.fireProtectionCoolingMultiplier);
 
         player.getStatusEffects().forEach((i) -> {
             if (i.getTranslationKey() == ThermStatusEffects.COOLING.getTranslationKey()) {
@@ -304,7 +306,14 @@ public class PlayerTempTickC2SPacket {
                 String fireRes = Objects.requireNonNull(player.getStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE).getEffectType())).getEffectType().getName().getString();
                 res = true;
             } catch (NullPointerException err) {res = false;}
-            if (!res) {
+            boolean protRes = false;
+            int fireProtOver = fireProt-ThermMod.config.fireProtectionLevelCount;
+            //if (fireProtOver<0) {fireProtOver=0;}
+            if (fireProt >= ThermMod.config.fireProtectionLevelCount && playerState.temp <= 70+(fireProtOver)) {
+                protRes = true;
+            }
+            if (!res && !protRes) {
+
                 if (ThermMod.config.temperatureDamageDecreasesSaturation) {player.getHungerManager().setSaturationLevel(0f);}
                 if (playerState.damageTick < playerState.maxDamageTick) {
                     playerState.damageTick += 1;

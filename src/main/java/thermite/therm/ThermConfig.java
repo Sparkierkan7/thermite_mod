@@ -37,7 +37,7 @@ public class ThermConfig extends Config {
     public boolean seasonalWeather = false;
 
 
-    //gui
+    //gui i don't even remember if this stuff works
     @ConfigEntry(comment = "X coordinate of temperature UI relative to its default position. (Default: 0)")
     public int temperatureXPos = 0;
 
@@ -53,6 +53,7 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "Different styles for the temperature display. (options: gauge, glass_thermometer)")
     public String temperatureDisplayType = "glass_thermometer";
 
+    //TODO: Potentially make it also reduce your entire healing intake by a percentage.
     @ConfigEntry(comment = "Whether or not temperature damage decreases your saturation. Beware disabling this makes it really easy to bypass temperature damage just by eating. (Default: true)")
     public boolean temperatureDamageDecreasesSaturation = true;
 
@@ -63,13 +64,14 @@ public class ThermConfig extends Config {
     public boolean enableWindParticles = true;
 
     //game
-    @ConfigEntry(comment = "Multiplier for how much each level of fire protection cools you (Default: 1f)")
-    public float fireProtectionCoolingMultiplier = 1f;
+    @ConfigEntry(comment = "How many levels of fire protection you have to wear for it to start providing hyperthermia resistance. (Default: 6)")
+    public int fireProtectionLevelCount = 6;
 
-    @ConfigEntry(comment = "Hyperthermia damage per 5 seconds. (Default: 1.0)")
+    //TODO this
+    @ConfigEntry(comment = "Hyperthermia damage per some... seconds. (Default: 1.5)")
     public float hyperthermiaDamage = 1.5f;
 
-    @ConfigEntry(comment = "Hypothermia damage per 5 seconds. (Default: 1.0)")
+    @ConfigEntry(comment = "Hypothermia damage per some... seconds. (Default: 1.5)")
     public float hypothermiaDamage = 1.5f;
 
     @ConfigEntry(comment = "Helmets that will change your temperature.")
@@ -155,8 +157,8 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "Damage interval for extreme hypothermia and hyperthermia in seconds (Default: 2)")
     public int extremetemperatureDamageInterval = 2;
 
-    @ConfigEntry(comment = "Duration of the cooling effect of ice juice in ticks. (Default: 6000)")
-    public int iceJuiceEffectDuration = 6000;
+    @ConfigEntry(comment = "Duration of the cooling effect of ice juice in ticks. (Default: 9600)")
+    public int iceJuiceEffectDuration = 9600;
 
     @ConfigEntry(comment = "Disables or enables wind. (Default: true)")
     public boolean enableWind = true;
@@ -164,7 +166,7 @@ public class ThermConfig extends Config {
     @ConfigEntry(comment = "If disabled, wind will only be applied in the overworld. (Default: false)")
     public boolean multidimensionalWind = false;
 
-    @ConfigEntry(comment = "Number of rays used in wind calculation. (Default: 10)")
+    @ConfigEntry(comment = "Number of rays used in wind calculation. (Default: 32)")
     public int windRayCount = 32;
 
     @ConfigEntry(comment = "How many blocks long wind rays are. (Default: 32)")
